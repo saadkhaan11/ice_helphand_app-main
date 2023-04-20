@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "60935317588",
+    "project_id": "ice-helphand",
+    "storage_bucket": "ice-helphand.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:60935317588:android:42e5cdd6b5224365e365c1",
+        "android_client_info": {
+          "package_name": "com.example.ice_helphand"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "60935317588-8tqkitlis7lnmsburmcgiaic9qmglp0g.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.ice_helphand",
+            "certificate_hash": "0fe2724a98d3cf74d41260693fd9029d8f1f10cc"
+          }
+        },
+        {
+          "client_id": "60935317588-ei3ake42edkqtic01jh0qco7mct3j4fk.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBP9e8Woff9_MOgBTKp5-paqePB2px5pns"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "60935317588-ei3ake42edkqtic01jh0qco7mct3j4fk.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

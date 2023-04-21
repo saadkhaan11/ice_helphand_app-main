@@ -52,6 +52,9 @@ dependencies:
   cherry_toast: ^1.1.0
   twilio_flutter: ^0.0.9
   google_maps_flutter: ^2.2.5
+  geolocator: ^9.0.2
+  # geoflutterfire2:
+  #   git: git://github.com/beerstorm-net/GeoFlutterFire2.git
 
 
   # The following adds the Cupertino Icons font to your application.
@@ -68,9 +71,9 @@ dev_dependencies:
   # activated in the `analysis_options.yaml` file located at the root of your
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
-  flutter_lints: ^2.0.0
+  flutter_lints: ^1.0.0
 
-# For information on the generic Dart part of this file, see the
+# For information on the generic Dart part of this file, see thes
 # following page: https://dart.dev/tools/pub/pubspec
 
 # The following section is specific to Flutter packages.

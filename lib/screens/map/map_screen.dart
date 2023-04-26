@@ -32,17 +32,21 @@ class MapScreenState extends State<MapScreen> {
   static GoogleMapController? _googleMapController;
   Set<Marker> markersInRadius = {};
   void initMarker(data, id) {
-    print('initmarker');
+    // print('initmarker');
     MarkerId markerId = MarkerId(id);
     final Marker marker = Marker(
         markerId: markerId,
         position:
             LatLng(data['location'].latitude, data['location'].longitude));
     // setState(() {
+    markers.clear();
     markers.add(marker);
-    getMarkersInRadius(LatLng(37.4219999, -122.0840575), 500);
+    // getMarkersInRadius(
+    //           LatLng(_currentPosition!.latitude, _currentPosition!.longitude),
+    //           1.1);
+    // getMarkersInRadius(LatLng(37.4219999, -122.0840575), 500);
     // });
-    print(markers.length);
+    // print(markers.length);
     // markers[markerId] = marker;
   }
 
@@ -62,6 +66,7 @@ class MapScreenState extends State<MapScreen> {
     markers.forEach((marker) {
       if (distanceBetween(center, marker.position) <= radius) {
         setState(() {
+          markersInRadius.clear();
           markersInRadius.add(marker);
         });
       }
@@ -75,12 +80,17 @@ class MapScreenState extends State<MapScreen> {
     querySnapshot.then((snapshot) {
       if (snapshot.docs.isNotEmpty) {
         for (int i = 0; i < snapshot.docs.length; i++) {
+          print("geolocation=>${snapshot.docs[i].data()['location'].latitude}");
+          print("geolocation=>${snapshot.docs[i].data()['location'].longitude}");
           initMarker(snapshot.docs[i].data(), snapshot.docs[i].id);
-          getMarkersInRadius(
-              LatLng(_currentPosition!.latitude, _currentPosition!.longitude),
-              1.1);
-          print("Doclist${snapshot.docs[i].data()['locaion']}");
+          // getMarkersInRadius(
+          //     LatLng(_currentPosition!.latitude, _currentPosition!.longitude),
+          //     1.1);
+          // print("Doclist${snapshot.docs[i].data()['locaion']}");
         }
+         getMarkersInRadius(
+              LatLng(_currentPosition!.latitude, _currentPosition!.longitude),
+              5000);
       }
     });
   }
@@ -119,19 +129,25 @@ class MapScreenState extends State<MapScreen> {
     // print('object');
 
     if (!hasPermission) return;
-    await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high)
-        .then((Position position) {
-      setState(() {
-        _currentPosition = position;
-        isLoading = false;
-        print("Loading :$isLoading");
-      });
-      updateLocation(position.latitude, position.longitude);
-      // print(position.latitude);
-      // _getAddressFromLatLng(_currentPosition!);
-    }).catchError((e) {
-      debugPrint(e);
+    await Geolocator.getPositionStream().listen((Position position) {
+      _currentPosition = position;
+       isLoading = false;
+       updateLocation(position.latitude, position.longitude);
+       locationData();
     });
+    //     .then((Position position) {
+    //   setState(() {
+    //     _currentPosition = position;
+    //     isLoading = false;
+    //     print("Loading :$isLoading");
+    //   });
+    //   updateLocation(position.latitude, position.longitude);
+    //   // print(position.latitude);
+    //   // _getAddressFromLatLng(_currentPosition!);
+    // }
+    // ).catchError((e) {
+    //   debugPrint(e);
+    // });
   }
 
   void updateLocation(double latitude, double longitude) {
@@ -177,6 +193,7 @@ class MapScreenState extends State<MapScreen> {
   void initState() {
     addCustomIcon();
     _getCurrentPosition();
+    // locationData();
     // StreamSubscription<Position> positionStream =
     //     Geolocator.getPositionStream(locationSettings: locationSettings)
     //         .listen((Position? position) {
@@ -198,7 +215,7 @@ class MapScreenState extends State<MapScreen> {
                   .collection("usersLocation")
                   .snapshots(),
               builder: (context, snapshot) {
-                print(snapshot);
+                // print('xamir');
                 if (snapshot.hasData) {
 //Extract the location from document
                   GeoPoint location = snapshot.data!.docs.first.get("location");
@@ -206,6 +223,7 @@ class MapScreenState extends State<MapScreen> {
                   if (location == null) {
                     return Text("There was no location data");
                   }
+                  print('snapshot ${snapshot.data!.docs.first['location']}');
                   // Remove any existing markers
                   // markers.clear();
                   // final latLng = LatLng(location.latitude, location.longitude);
@@ -226,7 +244,7 @@ class MapScreenState extends State<MapScreen> {
                     onMapCreated: (GoogleMapController controller) {
                       _controller.complete(controller);
                     },
-                    markers: markersInRadius,
+                    markers:markersInRadius,
                     circles: {
                       Circle(
                           circleId: CircleId('1'),

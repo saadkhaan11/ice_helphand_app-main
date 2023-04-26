@@ -28,10 +28,11 @@ class MapScreenState extends State<MapScreen> {
   BitmapDescriptor markerIcon = BitmapDescriptor.defaultMarker;
   bool isLoading = true;
   List<MarkerData> markerDataList = [];
-  Set<Marker> markers = {};
+   Map<MarkerId, Marker> markers = <MarkerId, Marker>{};
+  // Set<Marker> markers = {};
   static GoogleMapController? _googleMapController;
   Set<Marker> markersInRadius = {};
-  void initMarker(data, id) {
+  void initMarker(data, id) async{
     // print('initmarker');
     MarkerId markerId = MarkerId(id);
     final Marker marker = Marker(
@@ -39,8 +40,13 @@ class MapScreenState extends State<MapScreen> {
         position:
             LatLng(data['location'].latitude, data['location'].longitude));
     // setState(() {
-    markers.clear();
-    markers.add(marker);
+    // markers.clear();
+    
+    setState(() {
+      // markers.clear();
+      markers[markerId]= marker;
+    });
+    print("markers length${markers.length}");
     // getMarkersInRadius(
     //           LatLng(_currentPosition!.latitude, _currentPosition!.longitude),
     //           1.1);
@@ -62,19 +68,21 @@ class MapScreenState extends State<MapScreen> {
     return 12742 * asin(sqrt(a));
   }
 
-  void getMarkersInRadius(LatLng center, double radius) {
-    markers.forEach((marker) {
-      if (distanceBetween(center, marker.position) <= radius) {
-        setState(() {
-          markersInRadius.clear();
-          markersInRadius.add(marker);
-        });
-      }
-    });
-    // return markersInRadius;
-  }
+  // void getMarkersInRadius(LatLng center, double radius) {
+  //   markers.forEach((marker) {
+  //     if (distanceBetween(center, marker.position) <= radius) {
+  //       setState(() {
+          
+  //         // markersInRadius.clear();
+  //         markersInRadius.add(marker);
+  //         // print("markers in Radius ${markersInRadius.length}");
+  //       });
+  //     }
+  //   });
+  //   // return markersInRadius;
+  // }
 
-  void locationData() {
+  void locationData() async {
     Future<QuerySnapshot<Map<String, dynamic>>> querySnapshot =
         firebaseFirestore.collection("usersLocation").get();
     querySnapshot.then((snapshot) {
@@ -88,9 +96,9 @@ class MapScreenState extends State<MapScreen> {
           //     1.1);
           // print("Doclist${snapshot.docs[i].data()['locaion']}");
         }
-         getMarkersInRadius(
-              LatLng(_currentPosition!.latitude, _currentPosition!.longitude),
-              5000);
+        //  getMarkersInRadius(
+        //       LatLng(_currentPosition!.latitude, _currentPosition!.longitude),
+        //       5000);
       }
     });
   }
@@ -133,7 +141,7 @@ class MapScreenState extends State<MapScreen> {
       _currentPosition = position;
        isLoading = false;
        updateLocation(position.latitude, position.longitude);
-       locationData();
+      //  locationData();
     });
     //     .then((Position position) {
     //   setState(() {
@@ -193,6 +201,7 @@ class MapScreenState extends State<MapScreen> {
   void initState() {
     addCustomIcon();
     _getCurrentPosition();
+    locationData();
     // locationData();
     // StreamSubscription<Position> positionStream =
     //     Geolocator.getPositionStream(locationSettings: locationSettings)
@@ -244,7 +253,7 @@ class MapScreenState extends State<MapScreen> {
                     onMapCreated: (GoogleMapController controller) {
                       _controller.complete(controller);
                     },
-                    markers:markersInRadius,
+                    markers:Set<Marker>.of(markers.values),
                     circles: {
                       Circle(
                           circleId: CircleId('1'),

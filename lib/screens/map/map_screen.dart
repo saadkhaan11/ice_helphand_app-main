@@ -1,12 +1,15 @@
 import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import '../../models/markerdata.dart';
 import 'dart:math' show cos, sqrt, asin;
+
+import '../../services/location_sevices.dart';
 // import 'package:geoflutterfire/geoflutterfire.dart';
 
 class MapScreen extends StatefulWidget {
@@ -28,23 +31,30 @@ class MapScreenState extends State<MapScreen> {
   BitmapDescriptor markerIcon = BitmapDescriptor.defaultMarker;
   bool isLoading = true;
   List<MarkerData> markerDataList = [];
-   Map<MarkerId, Marker> markers = <MarkerId, Marker>{};
-  // Set<Marker> markers = {};
+  //  Map<MarkerId, Marker> markers = <MarkerId, Marker>{};
+  Set<Marker> markers = {};
+  String? destinationAdress;
+  String? currentAdress;
+
   static GoogleMapController? _googleMapController;
   Set<Marker> markersInRadius = {};
-  void initMarker(data, id) async{
+  void initMarker(data, id) async {
     // print('initmarker');
     MarkerId markerId = MarkerId(id);
     final Marker marker = Marker(
         markerId: markerId,
-        position:
-            LatLng(data['location'].latitude, data['location'].longitude));
+        position: LatLng(data['location'].latitude, data['location'].longitude),
+        onTap: () {
+          print('pressed');
+          getAddressFromLatLong(
+              data['location'].latitude, data['location'].longitude);
+        });
     // setState(() {
     // markers.clear();
-    
+
     setState(() {
       // markers.clear();
-      markers[markerId]= marker;
+      markers.add(marker);
     });
     print("markers length${markers.length}");
     // getMarkersInRadius(
@@ -72,7 +82,7 @@ class MapScreenState extends State<MapScreen> {
   //   markers.forEach((marker) {
   //     if (distanceBetween(center, marker.position) <= radius) {
   //       setState(() {
-          
+
   //         // markersInRadius.clear();
   //         markersInRadius.add(marker);
   //         // print("markers in Radius ${markersInRadius.length}");
@@ -89,7 +99,8 @@ class MapScreenState extends State<MapScreen> {
       if (snapshot.docs.isNotEmpty) {
         for (int i = 0; i < snapshot.docs.length; i++) {
           print("geolocation=>${snapshot.docs[i].data()['location'].latitude}");
-          print("geolocation=>${snapshot.docs[i].data()['location'].longitude}");
+          print(
+              "geolocation=>${snapshot.docs[i].data()['location'].longitude}");
           initMarker(snapshot.docs[i].data(), snapshot.docs[i].id);
           // getMarkersInRadius(
           //     LatLng(_currentPosition!.latitude, _currentPosition!.longitude),
@@ -132,17 +143,54 @@ class MapScreenState extends State<MapScreen> {
     return true;
   }
 
+  Future<void> getAddressFromLatLong(double latitude, double longitude) async {
+    List<Placemark> placemarks =
+        await placemarkFromCoordinates(latitude, longitude);
+    // print(placemarks);
+    Placemark place = placemarks[0];
+    destinationAdress =
+        '${place.street}, ${place.subLocality}, ${place.locality}, ${place.postalCode}, ${place.country}';
+
+    print(destinationAdress);
+  }
+
+  Future<void> getCurrentAddressFromLatLong(
+      double latitude, double longitude) async {
+    List<Placemark> placemarks =
+        await placemarkFromCoordinates(latitude, longitude);
+    // print(placemarks);
+    Placemark place = placemarks[0];
+    currentAdress =
+        '${place.street}, ${place.subLocality}, ${place.locality}, ${place.postalCode}, ${place.country}';
+
+    print(currentAdress);
+  }
+
+  // Future<void> getCurrentAddressFromLatLong(
+  //     double latitude, double longitude) async {
+  //   List<Placemark> placemarks =
+  //       await placemarkFromCoordinates(latitude, latitude);
+  //   // print(placemarks);
+  //   Placemark place = placemarks[0];
+  //   currentAdress =
+  //       '${place.street}, ${place.subLocality}, ${place.locality}, ${place.postalCode}, ${place.country}';
+
+  //   print("current${currentAdress}");
+  // }
+
   Future<void> _getCurrentPosition() async {
     final hasPermission = await _handleLocationPermission();
     // print('object');
 
     if (!hasPermission) return;
+
     await Geolocator.getPositionStream().listen((Position position) {
       _currentPosition = position;
-       isLoading = false;
-       updateLocation(position.latitude, position.longitude);
+      isLoading = false;
+      updateLocation(position.latitude, position.longitude);
       //  locationData();
     });
+
     //     .then((Position position) {
     //   setState(() {
     //     _currentPosition = position;
@@ -253,7 +301,7 @@ class MapScreenState extends State<MapScreen> {
                     onMapCreated: (GoogleMapController controller) {
                       _controller.complete(controller);
                     },
-                    markers:Set<Marker>.of(markers.values),
+                    markers: markers,
                     circles: {
                       Circle(
                           circleId: CircleId('1'),
@@ -271,7 +319,9 @@ class MapScreenState extends State<MapScreen> {
                 return CircularProgressIndicator();
               }),
       floatingActionButton: FloatingActionButton.extended(
-        onPressed: _goToTheLake,
+        onPressed: () {
+          _goToTheLake();
+        },
         label: const Text('To the lake!'),
         icon: const Icon(Icons.directions_boat),
       ),
@@ -281,7 +331,13 @@ class MapScreenState extends State<MapScreen> {
   void _goToTheLake() async {
     // final GoogleMapController controller = await _controller.future;
     // controller.animateCamera(CameraUpdate.newCameraPosition(_kLake));
-    locationData();
+    // getAddressFromLatLong(_currentPosition);
+    // getCurrentAddressFromLatLong(
+    //     _currentPosition!.latitude, _currentPosition!.latitude);
+    getCurrentAddressFromLatLong(
+        _currentPosition!.latitude, _currentPosition!.longitude);
+    LocationServices()
+        .getDirections(currentAdress, 'Universal+Studios+Hollywood');
     // print(_currentPosition?.latitude);
     // print(_currentPosition?.longitude);
   }

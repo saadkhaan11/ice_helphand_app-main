@@ -53,6 +53,9 @@ dependencies:
   twilio_flutter: ^0.0.9
   google_maps_flutter: ^2.2.5
   geolocator: ^9.0.2
+  flutter_polyline_points: ^1.0.0
+  http: ^0.13.5
+  geocoding: ^2.1.0
   # flutter_geofire: ^2.0.3
   # geoflutterfire2:
   #   git: git://github.com/beerstorm-net/GeoFlutterFire2.git

@@ -1,6 +1,6 @@
 import 'dart:async';
-
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -8,12 +8,12 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:ice_helphand/services/database.dart';
 import 'package:overlay_support/overlay_support.dart';
 import '../models/myuser.dart';
-import 'dart:async';
 import 'dart:io';
 
 class Auth {
   final FirebaseAuth _auth = FirebaseAuth.instance;
-
+  final _fcm = FirebaseMessaging.instance;
+ 
   MyUser? _userfromfirebaseuser(User? user) {
     return user != null ? MyUser(user.uid) : null;
   }
@@ -63,7 +63,14 @@ class Auth {
           email: email.trim(), password: pass.trim());
       User? user = userCredential.user;
 
+      //function to store token
+      DatabaseService databaseService = DatabaseService(user!.uid);
+      final token = await _fcm.getToken();
+      databaseService.storeToken(token:token );
+      
+
       return _userfromfirebaseuser(user);
+
     } on FirebaseAuthException catch (e) {
       // print('xyz');
       if (e.code == 'invalid-email') {

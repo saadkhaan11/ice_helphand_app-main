@@ -9,6 +9,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.1.1"
+  args:
+    dependency: transitive
+    description:
+      name: args
+      sha256: "4cab82a83ffef80b262ddedf47a0a8e56ee6fbf7fe21e6e768b02792034dd440"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.4.0"
   async:
     dependency: transitive
     description:
@@ -97,6 +105,30 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.4.2"
+  cloud_functions:
+    dependency: "direct main"
+    description:
+      name: cloud_functions
+      sha256: e22ff122e75ccb6d9d521415d35c25807ba6300932ec3c8ca8ccb73dc5aa39b6
+      url: "https://pub.dev"
+    source: hosted
+    version: "4.1.1"
+  cloud_functions_platform_interface:
+    dependency: transitive
+    description:
+      name: cloud_functions_platform_interface
+      sha256: d92bd40b3fbcfe32babac91c6423725ace783880f9d06c7c92d44249afc3abfb
+      url: "https://pub.dev"
+    source: hosted
+    version: "5.2.1"
+  cloud_functions_web:
+    dependency: transitive
+    description:
+      name: cloud_functions_web
+      sha256: deffdf2f54d47d88192b82d331065f4a419e49616d1b662785af64556a1760ce
+      url: "https://pub.dev"
+    source: hosted
+    version: "4.4.1"
   collection:
     dependency: transitive
     description:
@@ -137,6 +169,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.5"
+  dbus:
+    dependency: transitive
+    description:
+      name: dbus
+      sha256: "6f07cba3f7b3448d42d015bfd3d53fe12e5b36da2423f23838efc1d5fb31a263"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.7.8"
   dots_indicator:
     dependency: transitive
     description:
@@ -225,6 +265,30 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.3.0"
+  firebase_messaging:
+    dependency: "direct main"
+    description:
+      name: firebase_messaging
+      sha256: b300f728021b52018e4fc5aed326e71f876ef58219d7f10754370f424a338929
+      url: "https://pub.dev"
+    source: hosted
+    version: "14.4.1"
+  firebase_messaging_platform_interface:
+    dependency: transitive
+    description:
+      name: firebase_messaging_platform_interface
+      sha256: "3585b447d9a8c8a22ab6c14ffe57c64c0fcd9656e437e3dd226ef88a5f334b84"
+      url: "https://pub.dev"
+    source: hosted
+    version: "4.3.1"
+  firebase_messaging_web:
+    dependency: transitive
+    description:
+      name: firebase_messaging_web
+      sha256: "9e95a7694a1a24a8cdb047351c5a75583c84767d82ce74c52647ee9f81b425ae"
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.3.1"
   firebase_storage:
     dependency: "direct main"
     description:
@@ -342,6 +406,30 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.4"
+  flutter_local_notifications:
+    dependency: "direct main"
+    description:
+      name: flutter_local_notifications
+      sha256: "67d6f528b4e71606f6ad66d26dee4a1ae653d1f7e5ded4364167c735477b6b86"
+      url: "https://pub.dev"
+    source: hosted
+    version: "14.0.0"
+  flutter_local_notifications_linux:
+    dependency: transitive
+    description:
+      name: flutter_local_notifications_linux
+      sha256: "909bb95de05a2e793503a2437146285a2f600cd0b3f826e26b870a334d8586d7"
+      url: "https://pub.dev"
+    source: hosted
+    version: "4.0.0"
+  flutter_local_notifications_platform_interface:
+    dependency: transitive
+    description:
+      name: flutter_local_notifications_platform_interface
+      sha256: "63235c42de5b6c99846969a27ad0209c401e6b77b0498939813725b5791c107c"
+      url: "https://pub.dev"
+    source: hosted
+    version: "7.0.0"
   flutter_plugin_android_lifecycle:
     dependency: transitive
     description:
@@ -973,6 +1061,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.10.0"
+  timezone:
+    dependency: transitive
+    description:
+      name: timezone
+      sha256: "1cfd8ddc2d1cfd836bc93e67b9be88c3adaeca6f40a00ca999104c30693cdca0"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.9.2"
   twilio_flutter:
     dependency: "direct main"
     description:

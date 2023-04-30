@@ -7,6 +7,7 @@ import 'package:provider/provider.dart';
 import 'package:twilio_flutter/twilio_flutter.dart';
 
 import '../../provider/contacts_provider.dart';
+import 'package:cloud_functions/cloud_functions.dart';
 
 class HomeScreen extends StatefulWidget {
   static const routeName = "/HomeScreen";
@@ -47,6 +48,15 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
+  Future<void> call() async {
+  HttpsCallable callable = FirebaseFunctions.instance.httpsCallable('helloWorld');
+   final results = await callable();
+   print(results);
+  
+}
+  // final response = await functions.call();
+  
+
 
   @override
   Widget build(BuildContext context) {
@@ -69,6 +79,9 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           InkWell(
               onTap: () {
+                print('call');
+                call.call();
+
                 // sendSmsToAll();
             
                 // twilioFlutter!.sendSMS(

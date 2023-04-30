@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:flutter/material.dart';
@@ -102,6 +103,7 @@ class MapScreenState extends State<MapScreen> {
           print(
               "geolocation=>${snapshot.docs[i].data()['location'].longitude}");
           initMarker(snapshot.docs[i].data(), snapshot.docs[i].id);
+          
           // getMarkersInRadius(
           //     LatLng(_currentPosition!.latitude, _currentPosition!.longitude),
           //     1.1);
@@ -321,6 +323,8 @@ class MapScreenState extends State<MapScreen> {
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () {
           _goToTheLake();
+        //   LocationServices()
+        // .getDirections(LatLng(_currentPosition!.latitude, _currentPosition!.longitude), const LatLng(50,50));
         },
         label: const Text('To the lake!'),
         icon: const Icon(Icons.directions_boat),
@@ -329,16 +333,12 @@ class MapScreenState extends State<MapScreen> {
   }
 
   void _goToTheLake() async {
-    // final GoogleMapController controller = await _controller.future;
-    // controller.animateCamera(CameraUpdate.newCameraPosition(_kLake));
-    // getAddressFromLatLong(_currentPosition);
+    final fcmToken = await FirebaseMessaging.instance.getToken();
+    print(fcmToken);
     // getCurrentAddressFromLatLong(
-    //     _currentPosition!.latitude, _currentPosition!.latitude);
-    getCurrentAddressFromLatLong(
-        _currentPosition!.latitude, _currentPosition!.longitude);
-    LocationServices()
-        .getDirections(currentAdress, 'Universal+Studios+Hollywood');
-    // print(_currentPosition?.latitude);
-    // print(_currentPosition?.longitude);
+    //     _currentPosition!.latitude, _currentPosition!.longitude);
+    // LocationServices()
+    //     .getDirections(LatLng(_currentPosition!.latitude, _currentPosition!.longitude), const LatLng(50,50));
+   
   }
 }

@@ -6,11 +6,14 @@ import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:ice_helphand/models/notification.dart';
+import 'package:ice_helphand/models/notification_body.dart';
 
 import '../../models/markerdata.dart';
 import 'dart:math' show cos, sqrt, asin;
 
 import '../../services/location_sevices.dart';
+import '../../services/notification_services.dart';
 // import 'package:geoflutterfire/geoflutterfire.dart';
 
 class MapScreen extends StatefulWidget {
@@ -24,6 +27,7 @@ class MapScreen extends StatefulWidget {
 class MapScreenState extends State<MapScreen> {
   FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
   User? user = FirebaseAuth.instance.currentUser;
+ 
 
   // final geo = Geoflutterfire();
   //geolocator
@@ -335,6 +339,7 @@ class MapScreenState extends State<MapScreen> {
   void _goToTheLake() async {
     final fcmToken = await FirebaseMessaging.instance.getToken();
     print(fcmToken);
+   
     // getCurrentAddressFromLatLong(
     //     _currentPosition!.latitude, _currentPosition!.longitude);
     // LocationServices()

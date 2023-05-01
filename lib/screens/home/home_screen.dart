@@ -6,8 +6,12 @@ import 'package:ice_helphand/size_config.dart';
 import 'package:provider/provider.dart';
 import 'package:twilio_flutter/twilio_flutter.dart';
 
+import '../../models/notification.dart';
+import '../../models/notification_body.dart';
 import '../../provider/contacts_provider.dart';
 import 'package:cloud_functions/cloud_functions.dart';
+
+import '../../services/notification_services.dart';
 
 class HomeScreen extends StatefulWidget {
   static const routeName = "/HomeScreen";
@@ -20,7 +24,7 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   TwilioFlutter? twilioFlutter;
   List<AddedContacts>? contactsList;
-
+ NotificationService notificationService = NotificationService();
   @override
   void initState() {
     twilioFlutter = TwilioFlutter(
@@ -80,7 +84,14 @@ class _HomeScreenState extends State<HomeScreen> {
           InkWell(
               onTap: () {
                 print('call');
-                call.call();
+                // 
+                 notificationService.createNotification(MyNotification(
+      to: "e4RqfczdRQKYp4LzznT9T-:APA91bG3bvFRkMsJ_7HzzK3uA2qpclcQLRbCp5pwIlj9XK3XF9vBXviqHoNM_pJIYwGn6g80VynLp7plbUpdxEai_kFF3PVupO396XmJPo3zU7Q-dnrJrjWDCTg9WdXavOIPUu3l8GeO",
+      notification: NotificationBody(
+        title: "Test",
+        body: "Notification Testing"
+      )
+    ));
 
                 // sendSmsToAll();
             

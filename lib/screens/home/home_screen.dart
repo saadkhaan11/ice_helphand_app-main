@@ -24,7 +24,7 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   TwilioFlutter? twilioFlutter;
   List<AddedContacts>? contactsList;
- NotificationService notificationService = NotificationService();
+  NotificationService notificationService = NotificationService();
   @override
   void initState() {
     twilioFlutter = TwilioFlutter(
@@ -53,14 +53,12 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future<void> call() async {
-  HttpsCallable callable = FirebaseFunctions.instance.httpsCallable('helloWorld');
-   final results = await callable();
-   print(results);
-  
-}
+    HttpsCallable callable =
+        FirebaseFunctions.instance.httpsCallable('helloWorld');
+    final results = await callable();
+    print(results);
+  }
   // final response = await functions.call();
-  
-
 
   @override
   Widget build(BuildContext context) {
@@ -84,17 +82,15 @@ class _HomeScreenState extends State<HomeScreen> {
           InkWell(
               onTap: () {
                 print('call');
-                // 
-                 notificationService.createNotification(MyNotification(
-      to: "e4RqfczdRQKYp4LzznT9T-:APA91bG3bvFRkMsJ_7HzzK3uA2qpclcQLRbCp5pwIlj9XK3XF9vBXviqHoNM_pJIYwGn6g80VynLp7plbUpdxEai_kFF3PVupO396XmJPo3zU7Q-dnrJrjWDCTg9WdXavOIPUu3l8GeO",
-      notification: NotificationBody(
-        title: "Test",
-        body: "Notification Testing"
-      )
-    ));
+                //
+                notificationService.createNotification(MyNotification(
+                    to:
+                        "erY7HqsPTy2PaVtxZ4tpqG:APA91bEd6aFVObqJtlPKLxSS7pipYCE3wM_LHkb9SdV9QHngSQzQXFMtVoir_orrvtoS0ExYLGC3qP_RD_EBlet-ELoKNvMlKohhbE90swOvQ44F0ZGNWEAzSlZm4YT_Qs38iX4vHj-l",
+                    notification: NotificationBody(
+                        title: "Test", body: "Notification Testing")));
 
                 // sendSmsToAll();
-            
+
                 // twilioFlutter!.sendSMS(
                 //     toNumber: '+923115838578', messageBody: 'hello world');
               },

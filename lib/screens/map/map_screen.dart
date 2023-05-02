@@ -6,15 +6,8 @@ import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:ice_helphand/models/notification.dart';
-import 'package:ice_helphand/models/notification_body.dart';
-
 import '../../models/markerdata.dart';
 import 'dart:math' show cos, sqrt, asin;
-
-import '../../services/location_sevices.dart';
-import '../../services/notification_services.dart';
-// import 'package:geoflutterfire/geoflutterfire.dart';
 
 class MapScreen extends StatefulWidget {
   static const routeName = "/mapScreen";
@@ -27,7 +20,6 @@ class MapScreen extends StatefulWidget {
 class MapScreenState extends State<MapScreen> {
   FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
   User? user = FirebaseAuth.instance.currentUser;
- 
 
   // final geo = Geoflutterfire();
   //geolocator
@@ -62,13 +54,6 @@ class MapScreenState extends State<MapScreen> {
       markers.add(marker);
     });
     print("markers length${markers.length}");
-    // getMarkersInRadius(
-    //           LatLng(_currentPosition!.latitude, _currentPosition!.longitude),
-    //           1.1);
-    // getMarkersInRadius(LatLng(37.4219999, -122.0840575), 500);
-    // });
-    // print(markers.length);
-    // markers[markerId] = marker;
   }
 
   double distanceBetween(LatLng point1, LatLng point2) {
@@ -83,19 +68,18 @@ class MapScreenState extends State<MapScreen> {
     return 12742 * asin(sqrt(a));
   }
 
-  // void getMarkersInRadius(LatLng center, double radius) {
-  //   markers.forEach((marker) {
-  //     if (distanceBetween(center, marker.position) <= radius) {
-  //       setState(() {
-
-  //         // markersInRadius.clear();
-  //         markersInRadius.add(marker);
-  //         // print("markers in Radius ${markersInRadius.length}");
-  //       });
-  //     }
-  //   });
-  //   // return markersInRadius;
-  // }
+  void getMarkersInRadius(LatLng center, double radius) {
+    markers.forEach((marker) {
+      if (distanceBetween(center, marker.position) <= radius) {
+        setState(() {
+          // markersInRadius.clear();
+          markersInRadius.add(marker);
+          // print("markers in Radius ${markersInRadius.length}");
+        });
+      }
+    });
+    // return markersInRadius;
+  }
 
   void locationData() async {
     Future<QuerySnapshot<Map<String, dynamic>>> querySnapshot =
@@ -103,19 +87,19 @@ class MapScreenState extends State<MapScreen> {
     querySnapshot.then((snapshot) {
       if (snapshot.docs.isNotEmpty) {
         for (int i = 0; i < snapshot.docs.length; i++) {
-          print("geolocation=>${snapshot.docs[i].data()['location'].latitude}");
-          print(
-              "geolocation=>${snapshot.docs[i].data()['location'].longitude}");
+          inRange(snapshot.docs[i].data()['location'].latitude,
+              snapshot.docs[i].data()['location'].longitude);
+
           initMarker(snapshot.docs[i].data(), snapshot.docs[i].id);
-          
+
           // getMarkersInRadius(
           //     LatLng(_currentPosition!.latitude, _currentPosition!.longitude),
           //     1.1);
           // print("Doclist${snapshot.docs[i].data()['locaion']}");
         }
-        //  getMarkersInRadius(
-        //       LatLng(_currentPosition!.latitude, _currentPosition!.longitude),
-        //       5000);
+        getMarkersInRadius(
+            LatLng(_currentPosition!.latitude, _currentPosition!.longitude),
+            5000);
       }
     });
   }
@@ -192,7 +176,8 @@ class MapScreenState extends State<MapScreen> {
 
     await Geolocator.getPositionStream().listen((Position position) {
       _currentPosition = position;
-      isLoading = false;
+      print("Curent Positin${_currentPosition}");
+
       updateLocation(position.latitude, position.longitude);
       //  locationData();
     });
@@ -210,6 +195,20 @@ class MapScreenState extends State<MapScreen> {
     // ).catchError((e) {
     //   debugPrint(e);
     // });
+  }
+
+  void inRange(double latitude, double longitude) {
+    double distance = distanceBetween(
+        LatLng(_currentPosition!.latitude, _currentPosition!.latitude),
+        LatLng(latitude, longitude));
+    print("distace${distance}");
+    // if (distance < 50) {
+    firebaseFirestore.collection("users").doc(user!.uid).update({
+      "inRange": true,
+    });
+    // }
+    // distanceBetween(latitude: 10, longitude: 20);
+    // GeoPoint location = GeoPoint(latitude, longitude);
   }
 
   void updateLocation(double latitude, double longitude) {
@@ -253,9 +252,13 @@ class MapScreenState extends State<MapScreen> {
 
   @override
   void initState() {
-    addCustomIcon();
-    _getCurrentPosition();
-    locationData();
+    _getCurrentPosition().then((value) {
+      isLoading = false;
+      print('then');
+      locationData();
+      addCustomIcon();
+    });
+
     // locationData();
     // StreamSubscription<Position> positionStream =
     //     Geolocator.getPositionStream(locationSettings: locationSettings)
@@ -327,8 +330,8 @@ class MapScreenState extends State<MapScreen> {
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () {
           _goToTheLake();
-        //   LocationServices()
-        // .getDirections(LatLng(_currentPosition!.latitude, _currentPosition!.longitude), const LatLng(50,50));
+          //   LocationServices()
+          // .getDirections(LatLng(_currentPosition!.latitude, _currentPosition!.longitude), const LatLng(50,50));
         },
         label: const Text('To the lake!'),
         icon: const Icon(Icons.directions_boat),
@@ -339,11 +342,10 @@ class MapScreenState extends State<MapScreen> {
   void _goToTheLake() async {
     final fcmToken = await FirebaseMessaging.instance.getToken();
     print(fcmToken);
-   
+
     // getCurrentAddressFromLatLong(
     //     _currentPosition!.latitude, _currentPosition!.longitude);
     // LocationServices()
     //     .getDirections(LatLng(_currentPosition!.latitude, _currentPosition!.longitude), const LatLng(50,50));
-   
   }
 }

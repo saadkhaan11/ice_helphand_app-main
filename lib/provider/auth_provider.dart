@@ -13,7 +13,7 @@ import 'dart:io';
 class Auth {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final _fcm = FirebaseMessaging.instance;
- 
+
   MyUser? _userfromfirebaseuser(User? user) {
     return user != null ? MyUser(user.uid) : null;
   }
@@ -66,11 +66,9 @@ class Auth {
       //function to store token
       DatabaseService databaseService = DatabaseService(user!.uid);
       final token = await _fcm.getToken();
-      databaseService.storeToken(token:token );
-      
+      databaseService.storeToken(token: token);
 
       return _userfromfirebaseuser(user);
-
     } on FirebaseAuthException catch (e) {
       // print('xyz');
       if (e.code == 'invalid-email') {
@@ -114,6 +112,8 @@ class Auth {
         email: email,
         image: url,
       );
+      final token = await _fcm.getToken();
+      databaseService.storeToken(token: token);
       return _userfromfirebaseuser(user);
     } on FirebaseAuthException catch (e) {
       // print(e.code);

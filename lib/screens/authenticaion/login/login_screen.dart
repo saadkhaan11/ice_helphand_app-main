@@ -16,7 +16,7 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   final _formkey = GlobalKey<FormState>();
-  final Auth auth = Auth();
+  final AuthProvider auth = AuthProvider();
   String email = '';
   String pass = '';
   String error = '';

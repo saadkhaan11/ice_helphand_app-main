@@ -107,11 +107,12 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return OverlaySupport.global(
         child: StreamProvider<MyUser?>.value(
-      value: Auth().user,
+      value: AuthProvider().user,
       initialData: null,
       child: MultiProvider(
         providers: [
           ChangeNotifierProvider(create: ((context) => ContactsProvider())),
+          ChangeNotifierProvider(create: ((context) => AuthProvider())),
         ],
         child: MaterialApp(
           debugShowCheckedModeBanner: false,

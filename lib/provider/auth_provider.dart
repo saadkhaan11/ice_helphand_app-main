@@ -10,7 +10,7 @@ import 'package:overlay_support/overlay_support.dart';
 import '../models/myuser.dart';
 import 'dart:io';
 
-class Auth {
+class AuthProvider with ChangeNotifier {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final _fcm = FirebaseMessaging.instance;
 

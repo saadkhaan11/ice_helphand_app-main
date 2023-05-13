@@ -17,7 +17,7 @@ class RegisterScreen extends StatefulWidget {
 }
 
 class _RegisterScreenState extends State<RegisterScreen> {
-  final Auth auth = Auth();
+  final AuthProvider auth = AuthProvider();
 
   final _formkey = GlobalKey<FormState>();
   String email = '';

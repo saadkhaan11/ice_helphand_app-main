@@ -4,6 +4,7 @@ import 'package:ice_helphand/screens/authenticaion/registeration/register_screen
 import 'package:ice_helphand/screens/bottombar_screen.dart';
 import 'package:ice_helphand/screens/chatScreen/chatusers_screen.dart';
 import 'package:ice_helphand/screens/contact/add_contact_screen.dart';
+import 'package:ice_helphand/screens/contact/edit_contact_screen.dart';
 import 'package:ice_helphand/screens/map/map_screen.dart';
 import 'package:ice_helphand/screens/verifyemail/verifyemail_screen.dart';
 import 'package:ice_helphand/screens/wrapper.dart';
@@ -19,4 +20,5 @@ final Map<String, WidgetBuilder> routes = {
   VerifyEmailPage.routeName: ((context) => VerifyEmailPage()),
   Wrapper.routeName: ((context) => Wrapper()),
   MapScreen.routeName: ((context) => MapScreen()),
+  // EditContactScreen.routeName: (context) => EditContactScreen(),
 };

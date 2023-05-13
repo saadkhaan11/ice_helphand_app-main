@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:flutter/material.dart';
@@ -35,6 +36,51 @@ class MapScreenState extends State<MapScreen> {
 
   static GoogleMapController? _googleMapController;
   Set<Marker> markersInRadius = {};
+  PolylinePoints polylinePoints = PolylinePoints();
+  String googleAPiKey = "AIzaSyBP9e8Woff9_MOgBTKp5-paqePB2px5pns";
+  Map<PolylineId, Polyline> polylines = {};
+  LatLng startLocation = LatLng(27.6683619, 85.3101895);
+  LatLng endLocation = LatLng(33.7260417, 72.8308683);
+  double? selectedLatitude;
+  double? selectedLongitude;
+//
+  List<LatLng> polylineCoordinates = [];
+
+  getDirections() async {
+    List<LatLng> polylineCoordinates = [];
+
+    PolylineResult result = await polylinePoints.getRouteBetweenCoordinates(
+      googleAPiKey,
+      PointLatLng(_currentPosition!.latitude, _currentPosition!.longitude),
+      PointLatLng(selectedLatitude!, selectedLongitude!),
+      travelMode: TravelMode.driving,
+    );
+
+    if (result.points.isNotEmpty) {
+      result.points.forEach((PointLatLng point) {
+        polylineCoordinates.add(LatLng(point.latitude, point.longitude));
+      });
+    } else {
+      print(result.errorMessage);
+    }
+    addPolyLine(polylineCoordinates);
+  }
+
+  addPolyLine(List<LatLng> polylineCoordinates) {
+    PolylineId id = PolylineId("poly");
+    Polyline polyline = Polyline(
+      polylineId: id,
+      color: Colors.blue,
+      points: polylineCoordinates,
+      width: 7,
+    );
+
+    setState(() {
+      polylines[id] = polyline;
+    });
+  }
+//
+
   void initMarker(data, id) async {
     // print('initmarker');
     MarkerId markerId = MarkerId(id);
@@ -42,7 +88,10 @@ class MapScreenState extends State<MapScreen> {
         markerId: markerId,
         position: LatLng(data['location'].latitude, data['location'].longitude),
         onTap: () {
-          print('pressed');
+          selectedLatitude = data['location'].latitude;
+          selectedLongitude = data['location'].longitude;
+          getDirections();
+          print('pressed${data['location'].latitude}');
           getAddressFromLatLong(
               data['location'].latitude, data['location'].longitude);
         });
@@ -175,11 +224,13 @@ class MapScreenState extends State<MapScreen> {
     if (!hasPermission) return;
 
     await Geolocator.getPositionStream().listen((Position position) {
+      print("current position${_currentPosition}");
       _currentPosition = position;
+      print("CP:${_currentPosition}");
       print("Curent Positin${_currentPosition}");
 
       updateLocation(position.latitude, position.longitude);
-      //  locationData();
+      // locationData();
     });
 
     //     .then((Position position) {
@@ -252,11 +303,39 @@ class MapScreenState extends State<MapScreen> {
 
   @override
   void initState() {
-    _getCurrentPosition().then((value) {
-      isLoading = false;
-      print('then');
+    // markers.add(Marker(
+    //   //add start location marker
+    //   markerId: MarkerId(startLocation.toString()),
+    //   position: startLocation, //position of marker
+    //   infoWindow: InfoWindow(
+    //     //popup info
+    //     title: 'Starting Point ',
+    //     snippet: 'Start Marker',
+    //   ),
+    //   icon: BitmapDescriptor.defaultMarker, //Icon for Marker
+    // ));
+
+    // markers.add(Marker(
+    //   //add distination location marker
+    //   markerId: MarkerId(endLocation.toString()),
+    //   position: endLocation, //position of marker
+    //   infoWindow: InfoWindow(
+    //     //popup info
+    //     title: 'Destination Point ',
+    //     snippet: 'Destination Marker',
+    //   ),
+    //   icon: BitmapDescriptor.defaultMarker, //Icon for Marker
+    // ));
+
+    // getDirections();
+
+    _getCurrentPosition().then((_) {
+      // print('then');
       locationData();
       addCustomIcon();
+      setState(() {
+        isLoading = false;
+      });
     });
 
     // locationData();
@@ -273,7 +352,7 @@ class MapScreenState extends State<MapScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: isLoading
-          ? Center(
+          ? const Center(
               child: CircularProgressIndicator(),
             )
           : StreamBuilder(
@@ -311,6 +390,7 @@ class MapScreenState extends State<MapScreen> {
                       _controller.complete(controller);
                     },
                     markers: markers,
+                    polylines: Set<Polyline>.of(polylines.values),
                     circles: {
                       Circle(
                           circleId: CircleId('1'),
@@ -327,15 +407,15 @@ class MapScreenState extends State<MapScreen> {
                 }
                 return CircularProgressIndicator();
               }),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () {
-          _goToTheLake();
-          //   LocationServices()
-          // .getDirections(LatLng(_currentPosition!.latitude, _currentPosition!.longitude), const LatLng(50,50));
-        },
-        label: const Text('To the lake!'),
-        icon: const Icon(Icons.directions_boat),
-      ),
+      // floatingActionButton: FloatingActionButton.extended(
+      //   onPressed: () {
+      //     _goToTheLake();
+      //     //   LocationServices()
+      //     // .getDirections(LatLng(_currentPosition!.latitude, _currentPosition!.longitude), const LatLng(50,50));
+      //   },
+      //   label: const Text('To the lake!'),
+      //   icon: const Icon(Icons.directions_boat),
+      // ),
     );
   }
 

@@ -1,10 +1,10 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:contacts_service/contacts_service.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:ice_helphand/provider/contacts_provider.dart';
 import 'package:ice_helphand/screens/contact/widgets/contact_card.dart';
-import 'package:ice_helphand/screens/contact/widgets/contact_search_field.dart';
 import 'package:ice_helphand/screens/contact/widgets/contacts_appbar.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
 
@@ -20,70 +20,144 @@ class ContactsScreen extends StatefulWidget {
 }
 
 class _ContactsScreenState extends State<ContactsScreen> {
+  List<AddedContacts> addedContatcs = [];
+  List<AddedContacts> listContacts = [];
   bool isLoading = true;
+
+  FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final CollectionReference createMyUser =
+      FirebaseFirestore.instance.collection('users');
+  String? phoneNo;
+  void loadContacts() async {
+    final User? user = _auth.currentUser;
+    final uid = user!.uid;
+    List<AddedContacts> tempContacts = [];
+    // isLoading = true;
+    // print("x${addedContatcs}");
+    // addedContatcs.clear();
+    // print("xamir${addedContatcs}");
+
+    createMyUser.doc(uid).collection('conatctList').get().then((snapshot) {
+      if (snapshot != null) {
+        for (int i = 0; i < snapshot.docs.length; i++) {
+          List<Item> phno = [];
+          var data = snapshot.docs[i].data();
+          print('data${data['phno']}');
+
+          // phoneNo = data['phno'];
+          // print(data['phno']);
+          phno.add(Item(label: data['name'], value: data['phno']));
+          // print(phno.length);
+          // phno!.add(Item(label: data['name'], value: data['phno']));
+          // print(phno[i].value);
+          tempContacts.add(AddedContacts(name: data['name'], phNo: phno));
+          print("tempcontats${tempContacts[i].phNo!.first.value}");
+          // print("xxxx${addedContatcs.length}");
+        }
+        listContacts = tempContacts;
+
+        setState(() {
+          isLoading = false;
+          print(isLoading);
+        });
+        // print("addedContacts${addedContatcs.length}");
+      }
+    });
+    print("Contactsloaded");
+  }
+
+  @override
+  void initState() {
+    // contactsProvider = Provider.of<ContactsProvider>(context);
+    loadContacts();
+    // setState(() {
+    //   isLoading = false;
+    // });
+    // if (listContacts.isEmpty) {
+    //   print("added${addedContatcs.length}");
+    //   loadContacts();
+    // }
+    // TODO: implement initState
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
     ContactsProvider contactsProvider = Provider.of<ContactsProvider>(context);
+    // addedContatcs = contactsProvider.addedContacts;
+    // print("addedContacts${addedContatcs}");
+    // listContacts = addedContatcs;
+    // print("listContacts${listContacts}");
     return Scaffold(
-        body: SafeArea(
-            child: SingleChildScrollView(
-      child: Column(children: [
-        ContactsAppBar(
-          isaddButton: true,
-          isavatar: true,
-          contactsList: contactsProvider.addedContacts,
-          addContact: contactsProvider.addContact,
-        ),
-        // ContactsSearchField(
-        //   runFilter: (String value) {},
-        // ),
-        // TextButton(
-        //     onPressed: () {
-        //       print(addedContacts.length);
-        //     },
-        //     child: Text('Press')),
-        SizedBox(
-          height: 700,
-          child: ListView.builder(
-            itemCount:
-                // isLoading
-                //     ? 10
-                //     :
-                contactsProvider.addedContacts.length,
-            itemBuilder: (context, index) {
-              final item = contactsProvider.addedContacts[index];
+        body: isLoading
+            ? const Center(child: CircularProgressIndicator())
+            : SafeArea(
+                child: SingleChildScrollView(
+                child: Column(children: [
+                  TextButton(
+                      onPressed: () {
+                        loadContacts();
+                      },
+                      child: Text('press')),
+                  ContactsAppBar(
+                    isaddButton: true,
+                    isavatar: true,
+                    contactsList: listContacts,
+                    addContact: contactsProvider.addContact,
+                  ),
+                  // ContactsSearchField(
+                  //   runFilter: (String value) {},
+                  // ),
+                  // TextButton(
+                  //     onPressed: () {
+                  //       print(addedContacts.length);
+                  //     },
+                  //     child: Text('Press')),
+                  SizedBox(
+                    height: 700,
+                    child: ListView.builder(
+                      itemCount:
+                          // isLoading
+                          //     ? 10
+                          //     :
+                          listContacts.length,
+                      itemBuilder: (context, index) {
+                        // final item = contactsProvider.addedContacts[index];
 
-              // if (isLoading) {
-              //   // print("if $isLoading");
-              //   return buildShimmer();
-              // } else {
-              // print(isLoading);
-              return Dismissible(
-                onDismissed: (direction) {
-                  contactsProvider.addedContacts.removeAt(index);
-                  // setState(() {
+                        // if (isLoading) {
+                        //   // print("if $isLoading");
+                        //   return buildShimmer();
+                        // } else {
+                        // print(isLoading);
+                        return Dismissible(
+                          onDismissed: (direction) {
+                            listContacts.removeAt(index);
+                            contactsProvider.removeContact(
+                                listContacts[index].phNo!.first.value);
+                            // setState(() {
 
-                  // });
-                },
-                key: UniqueKey(),
-                background: slideLeftBackground(),
-                child: ContactCard(
-                  name: contactsProvider.addedContacts[index].name,
-                  phNo: contactsProvider.addedContacts[index].phNo,
-                  addIcon: false,
-                  removeContactFunction: () {
-                    contactsProvider.removeContact(index);
-                  },
-                ),
-              );
-              // }
-            },
-          ),
-        ),
-        //
-      ]),
-    )));
+                            // });
+                          },
+                          key: UniqueKey(),
+                          background: slideLeftBackground(),
+                          child: ContactCard(
+                            name: listContacts[index].name,
+                            phNo: listContacts[index].phNo,
+                            addIcon: false,
+                            removeContactFunction: () {
+                              contactsProvider.removeContact(
+                                  listContacts[index].phNo!.first.value);
+                            },
+                          ),
+                        );
+                        // }
+                      },
+                    ),
+                  ),
+                  //
+                ]),
+              )));
   }
 }
 

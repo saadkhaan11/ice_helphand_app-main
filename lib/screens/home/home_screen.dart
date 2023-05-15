@@ -5,6 +5,7 @@ import 'package:ice_helphand/models/added_contacts.dart';
 import 'package:ice_helphand/provider/auth_provider.dart';
 import 'package:ice_helphand/size_config.dart';
 import 'package:provider/provider.dart';
+import 'package:shake/shake.dart';
 import 'package:twilio_flutter/twilio_flutter.dart';
 
 import '../../models/notification.dart';
@@ -34,13 +35,30 @@ class _HomeScreenState extends State<HomeScreen> {
   String? selectedText;
   String? selectedBody;
   List<Map> cards = [
+    {'title': 'Theft Spotted', 'body': 'He Got Robbed Help Him'},
     {'title': 'I Have Accident', 'body': 'Accident Spotted Help Him'},
     {'title': 'I Am Injured', 'body': 'Help Him He is Injued'},
     {'title': 'Petrol Need', 'body': 'He Need Petrol Help Him'},
-    {'title': 'Robbing Spotted', 'body': 'He Got Robbed Help Him'},
   ];
   @override
   void initState() {
+    ShakeDetector detector = ShakeDetector.autoStart(
+      onPhoneShake: () {
+        sendSmsToAll();
+        notifyInRange();
+        // ScaffoldMessenger.of(context).showSnackBar(
+        //   const SnackBar(
+        //     content: Text('Shake!'),
+        //   ),
+        // );
+        print('shaked');
+        // Do stuff on phone shake
+      },
+      minimumShakeCount: 1,
+      shakeSlopTimeMS: 500,
+      shakeCountResetTime: 3000,
+      shakeThresholdGravity: 2.7,
+    );
     twilioFlutter = TwilioFlutter(
         accountSid:
             'AC8f26982050b5cbfb2de055378c190dda', // replace *** with Account SID

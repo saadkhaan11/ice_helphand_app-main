@@ -10,6 +10,8 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import '../../models/markerdata.dart';
 import 'dart:math' show cos, sqrt, asin;
 
+import '../chatScreen/chat_screen.dart';
+
 class MapScreen extends StatefulWidget {
   static const routeName = "/mapScreen";
   const MapScreen({Key? key}) : super(key: key);
@@ -33,6 +35,10 @@ class MapScreenState extends State<MapScreen> {
   Set<Marker> markers = {};
   String? destinationAdress;
   String? currentAdress;
+  final List<Map> _allUsers = [];
+  String? friedId;
+  String? friendName;
+  String? friendImage;
 
   static GoogleMapController? _googleMapController;
   Set<Marker> markersInRadius = {};
@@ -45,6 +51,27 @@ class MapScreenState extends State<MapScreen> {
   double? selectedLongitude;
 //
   List<LatLng> polylineCoordinates = [];
+
+  void getUserData(String uid) async {
+    await FirebaseFirestore.instance
+        .collection('users')
+        .doc(uid)
+        .get()
+        // .where('username', isEqualTo: searchController.text)
+
+        .then((value) {
+      friedId = value.data()!['uid'];
+      friendName = value.data()!['username'];
+      friendImage = value.data()!['image'];
+      print('value${value.data()}');
+      // value.docs.forEach((users) {
+      //   if (users.data()['email'] != user!.email) {
+      //     _allUsers.add(users.data());
+      //   }
+      // });
+      // print(_allUsers);
+    });
+  }
 
   getDirections() async {
     List<LatLng> polylineCoordinates = [];
@@ -81,13 +108,34 @@ class MapScreenState extends State<MapScreen> {
   }
 //
 
-  void initMarker(data, id) async {
-    // print('initmarker');
+  void initMarker(data, id, name) async {
+    print('xmarker${name}');
     MarkerId markerId = MarkerId(id);
     final Marker marker = Marker(
+        infoWindow: InfoWindow(
+            title: (user!.uid != id) ? name : 'You',
+            snippet: (user!.uid != id) ? 'Tap to Chat' : '',
+            onTap: () {
+              // print(user!.uid);
+              // print(id);
+              // getUserData(id);
+              // print(id);
+              if (user!.uid != id) {
+                Navigator.push(context, MaterialPageRoute(builder: ((context) {
+                  return ChatScreen(
+                      currentUser: user!.uid,
+                      friendId: friedId.toString(),
+                      friendName: friendName.toString(),
+                      friendImage: friendImage.toString());
+                })));
+              }
+            }),
         markerId: markerId,
+        icon: markerIcon,
         position: LatLng(data['location'].latitude, data['location'].longitude),
         onTap: () {
+          // print(user!.uid);
+          getUserData(id);
           selectedLatitude = data['location'].latitude;
           selectedLongitude = data['location'].longitude;
           getDirections();
@@ -131,15 +179,23 @@ class MapScreenState extends State<MapScreen> {
   }
 
   void locationData() async {
+    // print('xa${user!.email}');
+    // String? name;
     Future<QuerySnapshot<Map<String, dynamic>>> querySnapshot =
         firebaseFirestore.collection("usersLocation").get();
+    // firebaseFirestore.collection("users").doc(user!.uid).get().then((value) {
+    //   name = value.data()!['username'];
+    //   print(name);
+    // });
     querySnapshot.then((snapshot) {
       if (snapshot.docs.isNotEmpty) {
         for (int i = 0; i < snapshot.docs.length; i++) {
           inRange(snapshot.docs[i].data()['location'].latitude,
               snapshot.docs[i].data()['location'].longitude);
+          addCustomIcon();
 
-          initMarker(snapshot.docs[i].data(), snapshot.docs[i].id);
+          initMarker(snapshot.docs[i].data(), snapshot.docs[i].id,
+              snapshot.docs[i].data()['username']);
 
           // getMarkersInRadius(
           //     LatLng(_currentPosition!.latitude, _currentPosition!.longitude),
@@ -148,7 +204,7 @@ class MapScreenState extends State<MapScreen> {
         }
         getMarkersInRadius(
             LatLng(_currentPosition!.latitude, _currentPosition!.longitude),
-            5000);
+            10);
       }
     });
   }
@@ -190,7 +246,7 @@ class MapScreenState extends State<MapScreen> {
     destinationAdress =
         '${place.street}, ${place.subLocality}, ${place.locality}, ${place.postalCode}, ${place.country}';
 
-    print(destinationAdress);
+    // print(destinationAdress);
   }
 
   Future<void> getCurrentAddressFromLatLong(
@@ -202,7 +258,7 @@ class MapScreenState extends State<MapScreen> {
     currentAdress =
         '${place.street}, ${place.subLocality}, ${place.locality}, ${place.postalCode}, ${place.country}';
 
-    print(currentAdress);
+    // print(currentAdress);
   }
 
   // Future<void> getCurrentAddressFromLatLong(
@@ -224,12 +280,13 @@ class MapScreenState extends State<MapScreen> {
     if (!hasPermission) return;
 
     await Geolocator.getPositionStream().listen((Position position) {
-      print("current position${_currentPosition}");
-      _currentPosition = position;
-      print("CP:${_currentPosition}");
-      print("Curent Positin${_currentPosition}");
+      // print("current position${_currentPosition}");
 
+      // print("CP:${_currentPosition}");
+      // print("Curent Positin${_currentPosition}");
+      _currentPosition = position;
       updateLocation(position.latitude, position.longitude);
+
       // locationData();
     });
 
@@ -252,7 +309,7 @@ class MapScreenState extends State<MapScreen> {
     double distance = distanceBetween(
         LatLng(_currentPosition!.latitude, _currentPosition!.latitude),
         LatLng(latitude, longitude));
-    print("distace${distance}");
+    // print("distace${distance}");
     // if (distance < 50) {
     firebaseFirestore.collection("users").doc(user!.uid).update({
       "inRange": true,
@@ -262,16 +319,28 @@ class MapScreenState extends State<MapScreen> {
     // GeoPoint location = GeoPoint(latitude, longitude);
   }
 
+  void setUserName() {
+    firebaseFirestore.collection("users").doc(user!.uid).get().then((value) {
+      print('userscollection${value.data()!['username']}');
+      firebaseFirestore.collection("usersLocation").doc(user!.uid).set({
+        "username": value.data()!['username'],
+      });
+
+      // print(name);
+    });
+  }
+
   void updateLocation(double latitude, double longitude) {
     GeoPoint location = GeoPoint(latitude, longitude);
-    firebaseFirestore.collection("usersLocation").doc(user!.uid).set({
+    firebaseFirestore.collection("usersLocation").doc(user!.uid).update({
       "location": location,
     });
+    print('location${location.latitude}');
   }
 
   void addCustomIcon() {
     BitmapDescriptor.fromAssetImage(
-            const ImageConfiguration(), "assets/images/mylocation.png")
+            const ImageConfiguration(), "assets/icons/userlocation.png")
         .then(
       (icon) {
         setState(() {
@@ -331,8 +400,9 @@ class MapScreenState extends State<MapScreen> {
 
     _getCurrentPosition().then((_) {
       // print('then');
+      setUserName();
       locationData();
-      addCustomIcon();
+
       setState(() {
         isLoading = false;
       });
@@ -389,7 +459,7 @@ class MapScreenState extends State<MapScreen> {
                     onMapCreated: (GoogleMapController controller) {
                       _controller.complete(controller);
                     },
-                    markers: markers,
+                    markers: markersInRadius,
                     polylines: Set<Polyline>.of(polylines.values),
                     circles: {
                       Circle(

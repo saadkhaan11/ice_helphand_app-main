@@ -6,6 +6,7 @@ import 'package:ice_helphand/models/myuser.dart';
 import 'package:ice_helphand/provider/auth_provider.dart';
 import 'package:ice_helphand/provider/contacts_provider.dart';
 import 'package:ice_helphand/routes.dart';
+import 'package:ice_helphand/screens/map/map_screen.dart';
 import 'package:ice_helphand/screens/wrapper.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:provider/provider.dart';
@@ -62,49 +63,34 @@ void main() async {
   });
 //Background message handler for Android/iOS
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
-//   FirebaseMessaging messaging = FirebaseMessaging.instance;
-//   await FirebaseMessaging.instance.getToken();
+   // Set the callback for handling notification clicks when the app is already open
+   FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+    // Handle the click action here
+    print('Notification clicked!');
+    print('Message data: ${message.data}');
+    print('Message notification: ${message.notification?.title}');
+    print('Message notification: ${message.notification?.body}');
+   },);
 
-// await FirebaseMessaging.instance
-//         .setForegroundNotificationPresentationOptions(
-//       alert: true,
-//       badge: true,
-//       sound: true,
-//     );
+    // Example: Navigating to the 'details' route and calling a function
+    Navigator.pushNamed(MyApp.appContext, MapScreen.routeName).then((_) {
+      // Function to perform after navigating to the 'details' route
+      // performSpecificFunction();
+    });
+  ;
 
-// NotificationSettings settings = await messaging.requestPermission(
-//   alert: true,
-//   announcement: false,
-//   badge: true,
-//   carPlay: false,
-//   criticalAlert: false,
-//   provisional: false,
-//   sound: true,
-// );
-// print('User granted permission: ${settings.authorizationStatus}');
-//  if (settings.authorizationStatus == AuthorizationStatus.authorized) {
-//     print('User granted permission');
-//     // TODO: handle the received notifications
-//   } else {
-//     print('User declined or has not accepted permission');
-//   }
-//   FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-//   print('Got a message whilst in the foreground!');
-//   print('Message data: ${message.data}');
-
-//   if (message.notification != null) {
-//     print('Message also contained a notification: ${message.notification}');
-//   }
-// });
-  runApp(const MyApp());
+  runApp( MyApp());
 }
 
 class MyApp extends StatelessWidget {
+   static late BuildContext appContext; // Define a static variable to store the BuildContext
   const MyApp({super.key});
-
+   // Store the BuildContext from the MaterialApp widget
+    
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+    appContext = context;
     return OverlaySupport.global(
         child: StreamProvider<MyUser?>.value(
       value: AuthProvider().user,

@@ -10,6 +10,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import '../../models/markerdata.dart';
 import 'dart:math' show cos, sqrt, asin;
 
+import '../../static_variables.dart';
 import '../chatScreen/chat_screen.dart';
 
 class MapScreen extends StatefulWidget {
@@ -27,7 +28,7 @@ class MapScreenState extends State<MapScreen> {
   // final geo = Geoflutterfire();
   //geolocator
   // String? _currentAddress;
-  static Position? _currentPosition;
+  // static Position? _currentPosition;
   BitmapDescriptor markerIcon = BitmapDescriptor.defaultMarker;
   bool isLoading = true;
   List<MarkerData> markerDataList = [];
@@ -51,6 +52,8 @@ class MapScreenState extends State<MapScreen> {
   double? selectedLongitude;
 //
   List<LatLng> polylineCoordinates = [];
+  Position? _currentPosition = MyStaticVariables.getMyStaticVariable();
+  // bool isLoading = true;
 
   void getUserData(String uid) async {
     await FirebaseFirestore.instance
@@ -203,9 +206,11 @@ class MapScreenState extends State<MapScreen> {
           // print("Doclist${snapshot.docs[i].data()['locaion']}");
         }
         getMarkersInRadius(
-            LatLng(_currentPosition!.latitude, _currentPosition!.longitude),
-            10);
+            LatLng(_currentPosition!.latitude, _currentPosition!.longitude), 3);
       }
+    });
+    setState(() {
+      isLoading = false;
     });
   }
 
@@ -280,29 +285,9 @@ class MapScreenState extends State<MapScreen> {
     if (!hasPermission) return;
 
     await Geolocator.getPositionStream().listen((Position position) {
-      // print("current position${_currentPosition}");
-
-      // print("CP:${_currentPosition}");
-      // print("Curent Positin${_currentPosition}");
       _currentPosition = position;
       updateLocation(position.latitude, position.longitude);
-
-      // locationData();
     });
-
-    //     .then((Position position) {
-    //   setState(() {
-    //     _currentPosition = position;
-    //     isLoading = false;
-    //     print("Loading :$isLoading");
-    //   });
-    //   updateLocation(position.latitude, position.longitude);
-    //   // print(position.latitude);
-    //   // _getAddressFromLatLng(_currentPosition!);
-    // }
-    // ).catchError((e) {
-    //   debugPrint(e);
-    // });
   }
 
   void inRange(double latitude, double longitude) {
@@ -355,7 +340,8 @@ class MapScreenState extends State<MapScreen> {
       Completer<GoogleMapController>();
 
   static final CameraPosition _kGooglePlex = CameraPosition(
-    target: LatLng(_currentPosition!.latitude, _currentPosition!.longitude),
+    target: LatLng(MyStaticVariables.getMyStaticVariable()!.latitude,
+        MyStaticVariables.getMyStaticVariable()!.longitude),
     zoom: 14.4746,
   );
 
@@ -397,16 +383,11 @@ class MapScreenState extends State<MapScreen> {
     // ));
 
     // getDirections();
-
-    _getCurrentPosition().then((_) {
-      // print('then');
-      setUserName();
-      locationData();
-
-      setState(() {
-        isLoading = false;
-      });
-    });
+    setUserName();
+    locationData();
+    // _getCurrentPosition().then((_) {
+    //   // print('then');
+    // });
 
     // locationData();
     // StreamSubscription<Position> positionStream =
@@ -430,14 +411,18 @@ class MapScreenState extends State<MapScreen> {
                   .collection("usersLocation")
                   .snapshots(),
               builder: (context, snapshot) {
-                // print('xamir');
-                if (snapshot.hasData) {
+                // print(snapshot.data!.docs.first.id);
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  isLoading =
+                      true; // Set loading to true while waiting for data
+                } else {
 //Extract the location from document
                   GeoPoint location = snapshot.data!.docs.first.get("location");
 // Check if location is valid
-                  if (location == null) {
-                    return Text("There was no location data");
-                  }
+                  isLoading = false;
+                  // if (location == null) {
+                  //   return Text("There was no location data");
+                  // }
                   print('snapshot ${snapshot.data!.docs.first['location']}');
                   // Remove any existing markers
                   // markers.clear();

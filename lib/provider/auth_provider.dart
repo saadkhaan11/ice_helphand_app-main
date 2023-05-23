@@ -91,6 +91,8 @@ class AuthProvider with ChangeNotifier {
       required String pass,
       required String username,
       required String image,
+      required String fName,
+      required String lName,
       required BuildContext context}) async {
     try {
       UserCredential userCredential =
@@ -108,10 +110,11 @@ class AuthProvider with ChangeNotifier {
       User? user = userCredential.user;
       DatabaseService databaseService = DatabaseService(user!.uid);
       databaseService.createmyUser(
-        username: username,
-        email: email,
-        image: url,
-      );
+          username: username,
+          email: email,
+          image: url,
+          fName: fName,
+          lName: lName);
       final token = await _fcm.getToken();
       databaseService.storeToken(token: token);
       return _userfromfirebaseuser(user);
@@ -129,5 +132,27 @@ class AuthProvider with ChangeNotifier {
 
   Future signout() async {
     return await _auth.signOut();
+  }
+
+  Future deleteUser(String email, String password) async {
+    try {
+      String uid = _auth.currentUser!.uid;
+      DatabaseService databaseService = DatabaseService(uid);
+
+      User? user = await _auth.currentUser;
+      AuthCredential credential = EmailAuthProvider.credential(
+        email: email,
+        password: password,
+      );
+      UserCredential result =
+          await user!.reauthenticateWithCredential(credential);
+      // await DatabaseService(uid: result.user.uid).deleteuser(); // called from database class
+      await result.user!.delete();
+      databaseService.deleteMyUser();
+      return true;
+    } catch (e) {
+      print(e.toString());
+      return null;
+    }
   }
 }

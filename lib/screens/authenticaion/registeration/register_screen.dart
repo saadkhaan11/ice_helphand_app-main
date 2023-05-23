@@ -24,6 +24,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
   String confirmPass = '';
   String pass = '';
   String username = '';
+  String firstName = '';
+  String lastName = '';
   String error = '';
   // final ImagePicker _picker = ImagePicker();
   XFile? pickedImage;
@@ -58,7 +60,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20),
           child: SingleChildScrollView(
-            physics: const NeverScrollableScrollPhysics(),
+            // physics: const NeverScrollableScrollPhysics(),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -139,6 +141,46 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     TextFormField(
                       onChanged: (value) {
                         setState(() {
+                          firstName = value;
+                        });
+                      },
+                      validator: (value) =>
+                          value!.isEmpty ? "Enter First Name" : null,
+                      decoration: InputDecoration(
+                        hintText: 'First Name',
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10.0),
+                          borderSide: BorderSide(color: Colors.white),
+                        ),
+                        hintStyle: TextStyle(color: Color(0xff8391A1)),
+                      ),
+                    ),
+                    SizedBox(
+                      height: height * .012,
+                    ),
+                    TextFormField(
+                      onChanged: (value) {
+                        setState(() {
+                          lastName = value;
+                        });
+                      },
+                      validator: (value) =>
+                          value!.isEmpty ? "Enter Last Name" : null,
+                      decoration: InputDecoration(
+                        hintText: 'Last Name',
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10.0),
+                          borderSide: BorderSide(color: Colors.white),
+                        ),
+                        hintStyle: TextStyle(color: Color(0xff8391A1)),
+                      ),
+                    ),
+                    SizedBox(
+                      height: height * .012,
+                    ),
+                    TextFormField(
+                      onChanged: (value) {
+                        setState(() {
                           email = value;
                         });
                       },
@@ -191,6 +233,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               pass: pass,
                               username: username,
                               image: pickedImage!.path,
+                              fName: firstName,
+                              lName: lastName,
                               context: context);
                           Navigator.pop(context);
                           // setState(() {});

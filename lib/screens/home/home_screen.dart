@@ -1,19 +1,19 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:ice_helphand/models/added_contacts.dart';
+import 'package:ice_helphand/models/payload.dart';
 import 'package:ice_helphand/provider/auth_provider.dart';
 import 'package:ice_helphand/size_config.dart';
 import 'package:provider/provider.dart';
 import 'package:shake/shake.dart';
 import 'package:twilio_flutter/twilio_flutter.dart';
-
 import '../../models/notification.dart';
 import '../../models/notification_body.dart';
 import '../../provider/contacts_provider.dart';
-import 'package:cloud_functions/cloud_functions.dart';
-
 import '../../services/notification_services.dart';
+import '../../static_variables.dart';
 
 class HomeScreen extends StatefulWidget {
   static const routeName = "/HomeScreen";
@@ -40,8 +40,64 @@ class _HomeScreenState extends State<HomeScreen> {
     {'title': 'I Am Injured', 'body': 'Help Him He is Injued'},
     {'title': 'Petrol Need', 'body': 'He Need Petrol Help Him'},
   ];
+  // static Position? _currentPosition;
+  Future<bool> _handleLocationPermission() async {
+    bool serviceEnabled;
+    LocationPermission permission;
+
+    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text(
+              'Location services are disabled. Please enable the services')));
+      return false;
+    }
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Location permissions are denied')));
+        return false;
+      }
+    }
+    if (permission == LocationPermission.deniedForever) {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text(
+              'Location permissions are permanently denied, we cannot request permissions.')));
+      return false;
+    }
+    return true;
+  }
+
+  void updateLocation(double latitude, double longitude) {
+    GeoPoint location = GeoPoint(latitude, longitude);
+    firebaseFirestore.collection("usersLocation").doc(user!.uid).update({
+      "location": location,
+    });
+    print('location${location.latitude}');
+  }
+
+  Future<void> _getCurrentPosition() async {
+    final hasPermission = await _handleLocationPermission();
+    // print('object');
+
+    if (!hasPermission) return;
+
+    await Geolocator.getPositionStream().listen((Position position) {
+      MyStaticVariables.setMyStaticVariable(position);
+      updateLocation(position.latitude, position.longitude);
+    });
+  }
+
   @override
   void initState() {
+    _getCurrentPosition().then((_) {
+      print('main current position done');
+      //   // print('then');
+      //   // setUserName();
+      //   // locationData();
+    });
     ShakeDetector detector = ShakeDetector.autoStart(
       onPhoneShake: () {
         sendSmsToAll();
@@ -71,9 +127,9 @@ class _HomeScreenState extends State<HomeScreen> {
     contactsList =
         Provider.of<ContactsProvider>(context, listen: false).getaddedContacts;
 
-    print("xxxx${contactsList!.length}");
+    // print("xxxx${contactsList!.length}");
     // pno();
-    print('twillo called');
+    // print('twillo called');
     super.initState();
   }
 
@@ -122,7 +178,10 @@ class _HomeScreenState extends State<HomeScreen> {
 
   void sendNotification(String? token, String? title, String? body) {
     notificationService.createNotification(MyNotification(
-        to: token, notification: NotificationBody(title: title, body: body)));
+        to: token,
+        notification: NotificationBody(title: title, body: body),
+        payload: Payload(type: 'msj', isNotification: '1')));
+    print('notification called');
   }
   // List<String> clsit = ['+923115838578', '+923468544378', '+923468544378'];
 
@@ -137,12 +196,12 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
-  Future<void> call() async {
-    HttpsCallable callable =
-        FirebaseFunctions.instance.httpsCallable('helloWorld');
-    final results = await callable();
-    print(results);
-  }
+  // Future<void> call() async {
+  //   HttpsCallable callable =
+  //       FirebaseFunctions.instance.httpsCallable('helloWorld');
+  //   final results = await callable();
+  //   print(results);
+  // }
   // final response = await functions.call();
 
   @override
@@ -170,7 +229,7 @@ class _HomeScreenState extends State<HomeScreen> {
             InkWell(
                 onTap: () {
                   print('call');
-                  sendSmsToAll();
+                  // sendSmsToAll();
                   notifyInRange();
                   //
                   // notificationService.createNotification(MyNotification(

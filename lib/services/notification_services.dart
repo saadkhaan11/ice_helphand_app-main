@@ -3,7 +3,7 @@ import 'package:http/http.dart' as http;
 import 'package:ice_helphand/models/notification.dart';
 
 class NotificationService {
-  Future<bool> createNotification(MyNotification notification) async {
+  Future<bool> createNotification(var notification) async {
     try {
       // print(order.billing!.firstName);
       final url = Uri.parse('https://fcm.googleapis.com/fcm/send');

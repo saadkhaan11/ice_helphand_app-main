@@ -57,7 +57,7 @@ class _VerifyEmailPageState extends State<VerifyEmailPage> {
   @override
   Widget build(BuildContext context) {
     return isVerified
-        ? const BottomBarScreen()
+        ? BottomBarScreen()
         : Scaffold(
             body: Column(
             crossAxisAlignment: CrossAxisAlignment.center,

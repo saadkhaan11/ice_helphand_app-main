@@ -68,19 +68,24 @@ class _ContactsScreenState extends State<ContactsScreen> {
   }
 
   @override
-  void initState() {
-    // contactsProvider = Provider.of<ContactsProvider>(context);
+  void didChangeDependencies() {
     loadContacts();
-    // setState(() {
-    //   isLoading = false;
-    // });
-    // if (listContacts.isEmpty) {
-    //   print("added${addedContatcs.length}");
-    //   loadContacts();
-    // }
-    // TODO: implement initState
-    super.initState();
+    // TODO: implement didChangeDependencies
+    super.didChangeDependencies();
   }
+  // void initState() {
+  //   // contactsProvider = Provider.of<ContactsProvider>(context);
+
+  //   // setState(() {
+  //   //   isLoading = false;
+  //   // });
+  //   // if (listContacts.isEmpty) {
+  //   //   print("added${addedContatcs.length}");
+  //   //   loadContacts();
+  //   // }
+  //   // TODO: implement initState
+  //   super.initState();
+  // }
 
   @override
   Widget build(BuildContext context) {

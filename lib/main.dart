@@ -8,7 +8,6 @@ import 'package:ice_helphand/models/myuser.dart';
 import 'package:ice_helphand/provider/auth_provider.dart';
 import 'package:ice_helphand/provider/contacts_provider.dart';
 import 'package:ice_helphand/routes.dart';
-import 'package:ice_helphand/screens/map/map_screen.dart';
 import 'package:ice_helphand/screens/wrapper.dart';
 import 'package:ice_helphand/static_variables.dart';
 import 'package:overlay_support/overlay_support.dart';
@@ -71,16 +70,16 @@ void main() async {
   //   _messageStreamController.sink.add(message);
   // });
 //Background message handler for Android/iOS
-  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+  // FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
 //   FirebaseMessaging messaging = FirebaseMessaging.instance;
 //   await FirebaseMessaging.instance.getToken();
 
-  // Example: Navigating to the 'details' route and calling a function
-  Navigator.pushNamed(MyApp.appContext, MapScreen.routeName).then((_) {
-    // Function to perform after navigating to the 'details' route
-    // performSpecificFunction();
-  });
-  ;
+// await FirebaseMessaging.instance
+//         .setForegroundNotificationPresentationOptions(
+//       alert: true,
+//       badge: true,
+//       sound: true,
+//     );
 
 // NotificationSettings settings = await messaging.requestPermission(
 //   alert: true,
@@ -106,12 +105,19 @@ void main() async {
 //     print('Message also contained a notification: ${message.notification}');
 //   }
 // });
-  runApp(const MyApp());
+  runApp(MaterialApp(
+    home: MyApp(),
+  ));
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
 
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
   // This widget is the root of your application.
   PushNotificationService notificationSerivce = PushNotificationService();
 
@@ -138,7 +144,6 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    appContext = context;
     return OverlaySupport.global(
         child: StreamProvider<MyUser?>.value(
       value: AuthProvider().user,

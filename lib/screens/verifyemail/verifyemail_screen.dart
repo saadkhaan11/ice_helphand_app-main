@@ -65,10 +65,10 @@ class _VerifyEmailPageState extends State<VerifyEmailPage> {
               Padding(
                 padding: EdgeInsets.symmetric(vertical: 140),
                 child: Center(
-                  child: Image.asset(
-                    'assets/icons/email.png',
-                    height: 200,
-                  ),
+                  child:SvgPicture.asset('assets/icons/gmail.svg',
+                  height: 200,
+                  
+                  )
                 ),
               ),
               Text(

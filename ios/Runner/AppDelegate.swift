@@ -12,5 +12,9 @@ import GoogleMaps
     GeneratedPluginRegistrant.register(with: self)
     return super.application(application, didFinishLaunchingWithOptions: launchOptions)
   }
+//  override init() {
+//     super.init()
+//     FirebaseApp.configure()
+//   }
   
 }

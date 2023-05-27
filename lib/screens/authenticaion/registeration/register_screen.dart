@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:ice_helphand/widgets/custom_button.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:overlay_support/overlay_support.dart';
 import 'package:provider/provider.dart';
 import '../../../provider/auth_provider.dart';
 import '../../../widgets/navigateback_button.dart';
@@ -65,7 +66,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 SizedBox(
-                  height: height * .05,
+                  height: height * .01,
                 ),
                 NavigateBackButton(
                   function: () {
@@ -73,7 +74,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   },
                 ),
                 SizedBox(
-                  height: height * .05,
+                  height: height * .01,
                 ),
                 const Text(
                   'Hello! Register to get\nstarted',
@@ -228,7 +229,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     CustomButton(
                       function: () async {
                         if (_formkey.currentState!.validate()) {
-                          await auth.signupWithEmailAndPass(
+                          if(pickedImage ==null){
+                            toast('Upload Image', context: context);
+                          }
+                          else{
+                            await auth.signupWithEmailAndPass(
                               email: email,
                               pass: pass,
                               username: username,
@@ -237,6 +242,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               lName: lastName,
                               context: context);
                           Navigator.pop(context);
+                          }
+                          
                           // setState(() {});
                           // .then((value) => Navigator.of(context)
                           //     .pushNamed(BottomBarScreen.routeName));
@@ -248,18 +255,18 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       width: 331,
                     ),
                     SizedBox(
-                      height: height * .020,
+                      height: height * .0001,
                     ),
-                    Text(
-                      'or Login With',
-                      style: TextStyle(color: Color(0xff6A707C)),
-                    ),
-                    SizedBox(
-                      height: height * .020,
-                    ),
-                    GestureDetector(
-                        onTap: (() {}),
-                        child: SvgPicture.asset('assets/google_ic.svg')),
+                    // Text(
+                    //   'or Login With',
+                    //   style: TextStyle(color: Color(0xff6A707C)),
+                    // ),
+                    // SizedBox(
+                    //   height: height * .020,
+                    // ),
+                    // GestureDetector(
+                    //     onTap: (() {}),
+                    //     child: SvgPicture.asset('assets/icons/google_ic.svg')),
                     Text(
                       error,
                       style: const TextStyle(color: Colors.red),

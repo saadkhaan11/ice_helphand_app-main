@@ -588,8 +588,9 @@ class _EditProfilePageState extends State<EditProfilePage> {
               actions: [
                 GestureDetector(
                   onTap: () {
-                    Navigator.pop(context);
+                    // Navigator.pop(context);
                     // RouteGenerator.navigatorKey.currentState!.pop('dialog');
+                    Navigator.of(context, rootNavigator: true).pop('dialog');
                   },
                   child: const Text(
                     "Cancel",
@@ -599,6 +600,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                 GestureDetector(
                   onTap: () {
                     Navigator.of(context, rootNavigator: true).pop('dialog');
+                    Navigator.pop(context);
                     // RouteGenerator.navigatorKey.currentState!.pop(context);
                   },
                   child: Container(

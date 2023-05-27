@@ -14,6 +14,7 @@ import 'package:overlay_support/overlay_support.dart';
 import 'package:provider/provider.dart';
 import 'services/pushnotification_service.dart';
 import 'dart:async';
+import 'firebase_options.dart';
 
 // Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 //   await Firebase.initializeApp();
@@ -32,7 +33,11 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+    
+);
+
   Provider.debugCheckInvalidValueType = null;
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
   // final messaging = FirebaseMessaging.instance;
@@ -105,7 +110,8 @@ void main() async {
 //     print('Message also contained a notification: ${message.notification}');
 //   }
 // });
-  runApp(MaterialApp(
+  runApp(const MaterialApp(
+    debugShowCheckedModeBanner: false,
     home: MyApp(),
   ));
 }
@@ -120,10 +126,57 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   // This widget is the root of your application.
   PushNotificationService notificationSerivce = PushNotificationService();
+  // Future<bool> _handleLocationPermission() async {
+  //   bool serviceEnabled;
+  //   LocationPermission permission;
+
+  //   serviceEnabled = await Geolocator.isLocationServiceEnabled();
+  //   if (!serviceEnabled) {
+  //     ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+  //         content: Text(
+  //             'Location services are disabled. Please enable the services')));
+  //     return false;
+  //   }
+  //   permission = await Geolocator.checkPermission();
+  //   if (permission == LocationPermission.denied) {
+  //     permission = await Geolocator.requestPermission();
+  //     if (permission == LocationPermission.denied) {
+  //       ScaffoldMessenger.of(context).showSnackBar(
+  //           const SnackBar(content: Text('Location permissions are denied')));
+  //       return false;
+  //     }
+  //   }
+  //   if (permission == LocationPermission.deniedForever) {
+  //     ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+  //         content: Text(
+  //             'Location permissions are permanently denied, we cannot request permissions.')));
+  //     return false;
+  //   }
+  //   return true;
+  // }
+
+  // Future<void> setPermission() async {
+  //   final hasPermission = await _handleLocationPermission();
+  //   print('permission main wali ${hasPermission}');
+  //   MyStaticVariables.setHasPermission(hasPermission);
+  //   print('has permission${hasPermission}');
+  //   // print('object');
+
+  //   // if (!hasPermission) return;
+
+  //   // Geolocator.getPositionStream().listen((Position position) {
+  //   //   print('position donesad');
+  //   //   MyStaticVariables.setMyStaticVariable(position);
+  //   //   updateLocation(position.latitude, position.longitude);
+  //   // });
+  // }
 
   @override
   void initState() {
+    
     // TODO: implement initState
+  
+    // setPermission();
     notificationSerivce.requestPermission();
     notificationSerivce.firebaseInit(context);
     notificationSerivce.setupInteractMessage(context);

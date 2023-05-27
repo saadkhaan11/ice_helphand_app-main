@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:ice_helphand/screens/authenticaion/forgetPass/forget_pass.dart';
 import 'package:ice_helphand/screens/authenticaion/registeration/register_screen.dart';
+import 'package:ice_helphand/size_config.dart';
 import 'package:provider/provider.dart';
 import '../../../provider/auth_provider.dart';
 import '../../../widgets/custom_button.dart';
@@ -23,6 +25,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
+    SizeConfig().init(context);
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
     // final authProvider = Provider.of<AuthProvider>(context);
@@ -41,14 +44,14 @@ class _LoginScreenState extends State<LoginScreen> {
                   },
                 ),
                 SizedBox(
-                  height: height * .12,
+                  height: getProportionateScreenHeight(20),
                 ),
                 const Text(
                   'Welcome back! Glad\nto see you, Again!',
                   style: TextStyle(fontSize: 28),
                 ),
                 SizedBox(
-                  height: height * .12,
+                  height: getProportionateScreenHeight(100),
                 ),
                 Form(
                   key: _formkey,
@@ -111,17 +114,23 @@ class _LoginScreenState extends State<LoginScreen> {
                             }),
                           ),
                           SizedBox(
-                            height: height * .030,
+                            height: getProportionateScreenHeight(20),
                           ),
-                          const Text(
-                            'Forget Password?',
-                            textAlign: TextAlign.end,
-                            style: TextStyle(color: Color(0xff6A707C)),
+                          GestureDetector(
+                            onTap: (){
+                              print('tap');
+                              Navigator.pushNamed(context, ForgetPasswordScreen.routeName);
+                            },
+                            child: const Text(
+                              'Forget Password?',
+                              textAlign: TextAlign.end,
+                              style: TextStyle(color: Color(0xff6A707C)),
+                            ),
                           ),
                         ],
                       ),
                       SizedBox(
-                        height: height * .069,
+                        height: getProportionateScreenHeight(60),
                       ),
                       CustomButton(
                         function: () async {
@@ -133,24 +142,24 @@ class _LoginScreenState extends State<LoginScreen> {
                         height: 56,
                         isSelected: true,
                         text: 'Login',
-                        width: 331,
+                        width: 350,
                       ),
                       SizedBox(
-                        height: height * .024,
+                        height: getProportionateScreenHeight(30),
                       ),
                       const Text(
                         'or Login With',
                         style: TextStyle(color: Color(0xff6A707C)),
                       ),
                       SizedBox(
-                        height: height * .030,
+                        height: getProportionateScreenHeight(30),
                       ),
                       // GestureDetector(
                       //     onTap: (() {
                       //       auth.signInWithGoogle(context);
                       //     }),
                       //     child:
-                      //      SvgPicture.asset('assets/google_ic.svg')),
+                      //      SvgPicture.asset('assets/icons/google_ic.svg')),
                       // Text(
                       //   error,
                       //   style: const TextStyle(color: Colors.red),
@@ -177,7 +186,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                         ],
                       ),
-                      Text(error),
+                     
                     ],
                   ),
                 ),

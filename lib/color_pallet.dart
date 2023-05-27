@@ -36,9 +36,9 @@ Color shadeColor(Color color, double factor) => Color.fromRGBO(
 
 class Palette {
   static const Color cuiOffWhite = Color(0xFFF0F0F0);
-  static const Color cuiPurple = Color(0xFF4B2980);
+  static const Color cuiPurple = Color(0xffE74140);
   static const Color cuiBlue = Color(0xFF115ea6);
-  static const Color frenchBlue = Color(0xFF2A77B7);
+  static const Color frenchBlue = Color(0xffE74140);
   static const Color aeroBlue = Color(0xFF8BBCE5);
   static const Color aliceBlue = Color(0xFFEFF2FA);
   static const Color red = Color(0xFFF32423);
@@ -48,16 +48,16 @@ class Palette {
   static const Color grey = Color(0xFF7C8483);
   static const Color hintGrey = Color(0xFF989BA2);
   static const Color yellow = Color(0xFFFFCC49);
-  static const Color blueInformation = Color(0xFF3384FF);
+  static const Color blueInformation = Color(0xffE74140);
   static const Color green = Color(0xFF48B527);
   static const Color textColor = Color(0xFF2F2E41);
   static const Color homeButtonGrey = Color(0xFFAEB0BB);
-  static const Color buttonBackground = Color(0xFFDEE5F8);
-  static const Color location = Color(0xFF76B5FA);
-  static const Color faceid = Color(0xFF9E616A);
+  static const Color buttonBackground = Color.fromARGB(36, 231, 64, 64);
+  static const Color location = Color(0xffE74140);
+  static const Color faceid = Color(0xffE74140);
   static const Color notifications = Color(0xFF48B527);
   static const Color language = Color(0xFFFFB8B8);
-  static const Color help = Color(0xFF2A77B7);
+  static const Color help = Color(0xffE74140);
   static const Color privacyPolicy = Color(0xFF37393F);
   static const Color orange = Color(0xFFFFA500);
   static const Color logOut = Color(0xFFF32423);

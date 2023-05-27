@@ -41,63 +41,67 @@ class _HomeScreenState extends State<HomeScreen> {
     {'title': 'Petrol Need', 'body': 'He Need Petrol Help Him'},
   ];
   // static Position? _currentPosition;
-  Future<bool> _handleLocationPermission() async {
-    bool serviceEnabled;
-    LocationPermission permission;
+  // Future<bool> _handleLocationPermission() async {
+  //   bool serviceEnabled;
+  //   LocationPermission permission;
 
-    serviceEnabled = await Geolocator.isLocationServiceEnabled();
-    if (!serviceEnabled) {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          content: Text(
-              'Location services are disabled. Please enable the services')));
-      return false;
-    }
-    permission = await Geolocator.checkPermission();
-    if (permission == LocationPermission.denied) {
-      permission = await Geolocator.requestPermission();
-      if (permission == LocationPermission.denied) {
-        ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Location permissions are denied')));
-        return false;
-      }
-    }
-    if (permission == LocationPermission.deniedForever) {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          content: Text(
-              'Location permissions are permanently denied, we cannot request permissions.')));
-      return false;
-    }
-    return true;
-  }
+  //   serviceEnabled = await Geolocator.isLocationServiceEnabled();
+  //   if (!serviceEnabled) {
+  //     ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+  //         content: Text(
+  //             'Location services are disabled. Please enable the services')));
+  //     return false;
+  //   }
+  //   permission = await Geolocator.checkPermission();
+  //   if (permission == LocationPermission.denied) {
+  //     permission = await Geolocator.requestPermission();
+  //     if (permission == LocationPermission.denied) {
+  //       ScaffoldMessenger.of(context).showSnackBar(
+  //           const SnackBar(content: Text('Location permissions are denied')));
+  //       return false;
+  //     }
+  //   }
+  //   if (permission == LocationPermission.deniedForever) {
+  //     ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+  //         content: Text(
+  //             'Location permissions are permanently denied, we cannot request permissions.')));
+  //     return false;
+  //   }
+  //   return true;
+  // }
 
-  void updateLocation(double latitude, double longitude) {
-    GeoPoint location = GeoPoint(latitude, longitude);
-    firebaseFirestore.collection("usersLocation").doc(user!.uid).update({
-      "location": location,
-    });
-    print('location${location.latitude}');
-  }
+  // void updateLocation(double latitude, double longitude) {
+  //   GeoPoint location = GeoPoint(latitude, longitude);
+  //   firebaseFirestore.collection("usersLocation").doc(user!.uid).update({
+  //     "location": location,
+  //   });
+  //   print('locationssss${location.latitude}');
+  // }
 
-  Future<void> _getCurrentPosition() async {
-    final hasPermission = await _handleLocationPermission();
-    // print('object');
-
-    if (!hasPermission) return;
-
-    await Geolocator.getPositionStream().listen((Position position) {
-      MyStaticVariables.setMyStaticVariable(position);
-      updateLocation(position.latitude, position.longitude);
-    });
-  }
+  // Future<void> _getCurrentPosition() async {
+  //   // final hasPermission = await _handleLocationPermission();
+  //   // print('has permission${hasPermission}');
+  //   // print('object');
+  //   bool? hasPermission = MyStaticVariables.getHasPermission();
+  //   if (!(hasPermission!)){
+  //     print('no Permission');
+  //     return;
+  //   } 
+  //   Geolocator.getPositionStream().listen((Position position) {
+  //     print('position donesad');
+  //     MyStaticVariables.setMyStaticVariable(position);
+  //     updateLocation(position.latitude, position.longitude);
+  //   });
+  // }
 
   @override
   void initState() {
-    _getCurrentPosition().then((_) {
-      print('main current position done');
-      //   // print('then');
-      //   // setUserName();
-      //   // locationData();
-    });
+    // _getCurrentPosition().then((_) {
+    //   // print('main current position done');
+    //   //   // print('then');
+    //   //   // setUserName();
+    //   //   // locationData();
+    // });
     ShakeDetector detector = ShakeDetector.autoStart(
       onPhoneShake: () {
         sendSmsToAll();
@@ -134,20 +138,21 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void notifyInRange() {
+    print('notificatioon');
     Future<QuerySnapshot<Map<String, dynamic>>> querySnapshot =
         firebaseFirestore.collection("users").get();
     querySnapshot.then((snapshot) {
       if (snapshot.docs.isNotEmpty) {
         for (int i = 0; i < snapshot.docs.length; i++) {
           // print("//${snapshot.docs[i].data()['uid']}");
-          // print("//${snapshot.docs[i].data()['inRange']}");
+          print("//${snapshot.docs[i].data()['inRange']}");
 
           // print(token);
           // getToken(snapshot.docs[i].data()['uid']);
 
           if (snapshot.docs[i].data()['uid'] != user!.uid &&
               snapshot.docs[i].data()['inRange'] == true) {
-            // print("if:${snapshot.docs[i].data()['uid']}");
+            print("if:${snapshot.docs[i].data()['uid']}");
             getToken(snapshot.docs[i].data()['uid']);
             // print(snapshot.docs[i].data());
             // getToken(snapshot.docs[i].data()['uid']);
@@ -170,6 +175,7 @@ class _HomeScreenState extends State<HomeScreen> {
             .get();
     querySnapshot.then((snapshot) {
       token = snapshot.docs.first.id;
+      print(token);
       sendNotification(token, selectedText ?? cards[0]['title'],
           selectedBody ?? cards[0]['body']);
       // print(token);
@@ -206,7 +212,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final AuthProvider authProvider = AuthProvider();
+    // final AuthProvider authProvider = AuthProvider();
     return Scaffold(
       body: Center(
           child: SizedBox(
@@ -257,7 +263,7 @@ class _HomeScreenState extends State<HomeScreen> {
             SingleChildScrollView(
               scrollDirection: Axis.horizontal,
               child: SizedBox(
-                height: getProportionateScreenHeight(100),
+                height: getProportionateScreenHeight(110),
                 width: getProportionateScreenWidth(400),
                 child: ListView.builder(
                     scrollDirection: Axis.horizontal,
@@ -315,7 +321,7 @@ class _CategoryCardState extends State<CategoryCard> {
       child: InkWell(
         onTap: widget.onTap,
         child: Container(
-            height: getProportionateScreenHeight(100),
+            height: getProportionateScreenHeight(80),
             width: getProportionateScreenWidth(140),
             decoration: BoxDecoration(
                 color: widget.isSelected

@@ -27,9 +27,11 @@ class _AddContactScreenState extends State<AddContactScreen> {
   // List<AddedContacts> addedContacts = [];
 
   void getPermission() async {
+    // print('permissions');
     if (await Permission.contacts.isGranted) {
       getContacts();
     } else {
+      print('not granted');
       await Permission.contacts.request();
     }
   }
@@ -41,6 +43,7 @@ class _AddContactScreenState extends State<AddContactScreen> {
     // print(isLoading);
     // await Future.delayed(Duration(seconds: 2));
     contactsList = await ContactsService.getContacts();
+    print('contacts list${contactsList}');
     setState(() {
       isLoading = false;
       // print('called $isLoading');
@@ -98,11 +101,11 @@ class _AddContactScreenState extends State<AddContactScreen> {
           isavatar: false,
           isaddButton: false,
         ),
-        TextButton(
-            onPressed: () {
-              print(addedContacts.length);
-            },
-            child: Text('Press')),
+        // TextButton(
+        //     onPressed: () {
+        //       print(addedContacts.length);
+        //     },
+        //     child: Text('Press')),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
           child: TextField(

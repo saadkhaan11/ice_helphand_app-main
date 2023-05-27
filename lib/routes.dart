@@ -1,4 +1,5 @@
 import 'package:flutter/widgets.dart';
+import 'package:ice_helphand/screens/authenticaion/forgetPass/forget_pass.dart';
 import 'package:ice_helphand/screens/authenticaion/login/login_screen.dart';
 import 'package:ice_helphand/screens/authenticaion/registeration/register_screen.dart';
 import 'package:ice_helphand/screens/bottombar_screen.dart';
@@ -22,7 +23,8 @@ final Map<String, WidgetBuilder> routes = {
   Wrapper.routeName: ((context) => const Wrapper()),
   MapScreen.routeName: ((context) => const MapScreen()),
   SettingsPage.routeName: ((context) => const SettingsPage()),
-  EditProfilePage.routeName: ((context) => const EditProfilePage())
+  EditProfilePage.routeName: ((context) => const EditProfilePage()),
+  ForgetPasswordScreen.routeName:(context) => const ForgetPasswordScreen(),
 
   // EditContactScreen.routeName: (context) => EditContactScreen(),
 };

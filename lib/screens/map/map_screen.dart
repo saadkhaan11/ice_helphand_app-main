@@ -22,6 +22,8 @@ class MapScreen extends StatefulWidget {
 }
 
 class MapScreenState extends State<MapScreen> {
+  
+  // var newLoading=true;
   FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
   User? user = FirebaseAuth.instance.currentUser;
 
@@ -29,6 +31,7 @@ class MapScreenState extends State<MapScreen> {
   //geolocator
   // String? _currentAddress;
   // static Position? _currentPosition;
+  Position? _currentPosition = MyStaticVariables.getCurrentPosition();
   BitmapDescriptor markerIcon = BitmapDescriptor.defaultMarker;
   bool isLoading = true;
   List<MarkerData> markerDataList = [];
@@ -40,6 +43,7 @@ class MapScreenState extends State<MapScreen> {
   String? friedId;
   String? friendName;
   String? friendImage;
+  // StreamSubscription<Position> ?_positionStreamSubscription;
 
   static GoogleMapController? _googleMapController;
   Set<Marker> markersInRadius = {};
@@ -52,7 +56,7 @@ class MapScreenState extends State<MapScreen> {
   double? selectedLongitude;
 //
   List<LatLng> polylineCoordinates = [];
-  Position? _currentPosition = MyStaticVariables.getMyStaticVariable();
+  // static Position? _currentPosition;
   // bool isLoading = true;
 
   void getUserData(String uid) async {
@@ -66,13 +70,6 @@ class MapScreenState extends State<MapScreen> {
       friedId = value.data()!['uid'];
       friendName = value.data()!['username'];
       friendImage = value.data()!['image'];
-      print('value${value.data()}');
-      // value.docs.forEach((users) {
-      //   if (users.data()['email'] != user!.email) {
-      //     _allUsers.add(users.data());
-      //   }
-      // });
-      // print(_allUsers);
     });
   }
 
@@ -110,7 +107,11 @@ class MapScreenState extends State<MapScreen> {
     });
   }
 //
-
+// void dispose() {
+//   print('disposing');
+//   _positionStreamSubscription!.cancel();
+//   super.dispose();
+// }
   void initMarker(data, id, name) async {
     print('xmarker${name}');
     MarkerId markerId = MarkerId(id);
@@ -143,8 +144,8 @@ class MapScreenState extends State<MapScreen> {
           selectedLongitude = data['location'].longitude;
           getDirections();
           print('pressed${data['location'].latitude}');
-          getAddressFromLatLong(
-              data['location'].latitude, data['location'].longitude);
+          // getAddressFromLatLong(
+          //     data['location'].latitude, data['location'].longitude);
         });
     // setState(() {
     // markers.clear();
@@ -182,28 +183,16 @@ class MapScreenState extends State<MapScreen> {
   }
 
   void locationData() async {
-    // print('xa${user!.email}');
-    // String? name;
-    Future<QuerySnapshot<Map<String, dynamic>>> querySnapshot =
-        firebaseFirestore.collection("usersLocation").get();
-    // firebaseFirestore.collection("users").doc(user!.uid).get().then((value) {
-    //   name = value.data()!['username'];
-    //   print(name);
-    // });
-    querySnapshot.then((snapshot) {
+    firebaseFirestore.collection("usersLocation").get().then((snapshot) {
       if (snapshot.docs.isNotEmpty) {
         for (int i = 0; i < snapshot.docs.length; i++) {
-          inRange(snapshot.docs[i].data()['location'].latitude,
-              snapshot.docs[i].data()['location'].longitude);
+          print('location Data ${snapshot.docs[i].data()['location']}');
+          // inRange(snapshot.docs[i].data()['location'].latitude,
+          //     snapshot.docs[i].data()['location'].longitude);
           addCustomIcon();
 
           initMarker(snapshot.docs[i].data(), snapshot.docs[i].id,
               snapshot.docs[i].data()['username']);
-
-          // getMarkersInRadius(
-          //     LatLng(_currentPosition!.latitude, _currentPosition!.longitude),
-          //     1.1);
-          // print("Doclist${snapshot.docs[i].data()['locaion']}");
         }
         getMarkersInRadius(
             LatLng(_currentPosition!.latitude, _currentPosition!.longitude), 3);
@@ -212,59 +201,60 @@ class MapScreenState extends State<MapScreen> {
     setState(() {
       isLoading = false;
     });
+    
   }
 
-  Future<bool> _handleLocationPermission() async {
-    bool serviceEnabled;
-    LocationPermission permission;
+  // Future<bool> _handleLocationPermission() async {
+  //   bool serviceEnabled;
+  //   LocationPermission permission;
 
-    serviceEnabled = await Geolocator.isLocationServiceEnabled();
-    if (!serviceEnabled) {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          content: Text(
-              'Location services are disabled. Please enable the services')));
-      return false;
-    }
-    permission = await Geolocator.checkPermission();
-    if (permission == LocationPermission.denied) {
-      permission = await Geolocator.requestPermission();
-      if (permission == LocationPermission.denied) {
-        ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Location permissions are denied')));
-        return false;
-      }
-    }
-    if (permission == LocationPermission.deniedForever) {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          content: Text(
-              'Location permissions are permanently denied, we cannot request permissions.')));
-      return false;
-    }
-    return true;
-  }
+  //   serviceEnabled = await Geolocator.isLocationServiceEnabled();
+  //   if (!serviceEnabled) {
+  //     ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+  //         content: Text(
+  //             'Location services are disabled. Please enable the services')));
+  //     return false;
+  //   }
+  //   permission = await Geolocator.checkPermission();
+  //   if (permission == LocationPermission.denied) {
+  //     permission = await Geolocator.requestPermission();
+  //     if (permission == LocationPermission.denied) {
+  //       ScaffoldMessenger.of(context).showSnackBar(
+  //           const SnackBar(content: Text('Location permissions are denied')));
+  //       return false;
+  //     }
+  //   }
+  //   if (permission == LocationPermission.deniedForever) {
+  //     ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+  //         content: Text(
+  //             'Location permissions are permanently denied, we cannot request permissions.')));
+  //     return false;
+  //   }
+  //   return true;
+  // }
 
-  Future<void> getAddressFromLatLong(double latitude, double longitude) async {
-    List<Placemark> placemarks =
-        await placemarkFromCoordinates(latitude, longitude);
-    // print(placemarks);
-    Placemark place = placemarks[0];
-    destinationAdress =
-        '${place.street}, ${place.subLocality}, ${place.locality}, ${place.postalCode}, ${place.country}';
+  // Future<void> getAddressFromLatLong(double latitude, double longitude) async {
+  //   List<Placemark> placemarks =
+  //       await placemarkFromCoordinates(latitude, longitude);
+  //   // print(placemarks);
+  //   Placemark place = placemarks[0];
+  //   destinationAdress =
+  //       '${place.street}, ${place.subLocality}, ${place.locality}, ${place.postalCode}, ${place.country}';
 
-    // print(destinationAdress);
-  }
+  //   // print(destinationAdress);
+  // }
 
-  Future<void> getCurrentAddressFromLatLong(
-      double latitude, double longitude) async {
-    List<Placemark> placemarks =
-        await placemarkFromCoordinates(latitude, longitude);
-    // print(placemarks);
-    Placemark place = placemarks[0];
-    currentAdress =
-        '${place.street}, ${place.subLocality}, ${place.locality}, ${place.postalCode}, ${place.country}';
+  // Future<void> getCurrentAddressFromLatLong(
+  //     double latitude, double longitude) async {
+  //   List<Placemark> placemarks =
+  //       await placemarkFromCoordinates(latitude, longitude);
+  //   // print(placemarks);
+  //   Placemark place = placemarks[0];
+  //   currentAdress =
+  //       '${place.street}, ${place.subLocality}, ${place.locality}, ${place.postalCode}, ${place.country}';
 
-    // print(currentAdress);
-  }
+  //   // print(currentAdress);
+  // }
 
   // Future<void> getCurrentAddressFromLatLong(
   //     double latitude, double longitude) async {
@@ -278,50 +268,89 @@ class MapScreenState extends State<MapScreen> {
   //   print("current${currentAdress}");
   // }
 
-  Future<void> _getCurrentPosition() async {
-    final hasPermission = await _handleLocationPermission();
-    // print('object');
+  // Future<void> _getCurrentPosition() async {
+  //   final hasPermission = await _handleLocationPermission();
+  //   // print('object');
 
-    if (!hasPermission) return;
+  //   if (!hasPermission) return;
 
-    await Geolocator.getPositionStream().listen((Position position) {
-      _currentPosition = position;
-      updateLocation(position.latitude, position.longitude);
-    });
-  }
+  //   await Geolocator.getPositionStream().listen((Position position) {
+  //     _currentPosition = position;
+  //     updateLocation(position.latitude, position.longitude);
+  //   });
+  // }
+//   Future<void> _getCurrentPosition() async {
+//     print('ok');
+//     bool? hasPermission = MyStaticVariables.getHasPermission();
+//     if (!(hasPermission!)){
+//       print('ddd');
+//       return;
+//     } 
+
+// _positionStreamSubscription=Geolocator.getPositionStream().listen((Position position) {
+//       print('getstreampostion${position.latitude}');
+//       MyStaticVariables.position=position;
+//       _currentPosition = position;
+//       print('current positionxyz${_currentPosition}');
+//       // newLoading=false;
+//       updateLocation(position.latitude, position.longitude);
+
+//     });
+    
+//   }
 
   void inRange(double latitude, double longitude) {
-    double distance = distanceBetween(
+
+  
+    
+         double distance = distanceBetween(
         LatLng(_currentPosition!.latitude, _currentPosition!.latitude),
         LatLng(latitude, longitude));
     // print("distace${distance}");
     // if (distance < 50) {
-    firebaseFirestore.collection("users").doc(user!.uid).update({
+    firebaseFirestore.collection("users").doc(user!.uid).set({
       "inRange": true,
-    });
+    },SetOptions(merge: true));
+ 
+    // print(_currentPosition);
+
     // }
     // distanceBetween(latitude: 10, longitude: 20);
     // GeoPoint location = GeoPoint(latitude, longitude);
   }
 
-  void setUserName() {
-    firebaseFirestore.collection("users").doc(user!.uid).get().then((value) {
-      print('userscollection${value.data()!['username']}');
-      firebaseFirestore.collection("usersLocation").doc(user!.uid).set({
-        "username": value.data()!['username'],
-      });
+  // void setUserName() {
+  //   firebaseFirestore.collection("users").doc(user!.uid).get().then((value) {
+  //     print('userscollection${value.data()!['username']}');
+  //     firebaseFirestore.collection("usersLocation").doc(user!.uid).set({
+  //       "username": value.data()!['username'],
+  //     },SetOptions(merge: true));
 
-      // print(name);
-    });
-  }
+  //     // print(name);
+  //   });
+  // }
 
-  void updateLocation(double latitude, double longitude) {
-    GeoPoint location = GeoPoint(latitude, longitude);
-    firebaseFirestore.collection("usersLocation").doc(user!.uid).update({
-      "location": location,
-    });
-    print('location${location.latitude}');
-  }
+//   Future updateLocation(
+//   double latitude,double longitude
+// ) {
+//   GeoPoint location = GeoPoint(latitude, longitude);
+//     return firebaseFirestore.collection('usersLocation').doc(user!.uid).update({
+      
+//       'location':location
+//     }).catchError((e) => {
+//       firebaseFirestore.collection('usersLocation').doc(user!.uid).set({
+//       'location':location
+//     },SetOptions(merge: true)),
+//     });
+// }
+
+  // void updateLocation(double latitude, double longitude) {
+  //   GeoPoint location = GeoPoint(latitude, longitude);
+  //   firebaseFirestore.collection("usersLocation").doc(user!.uid).set({
+  //     "location": location,
+  //   },SetOptions(merge: true));
+  //   print('update location called ${location.latitude}');
+  // }
 
   void addCustomIcon() {
     BitmapDescriptor.fromAssetImage(
@@ -340,8 +369,8 @@ class MapScreenState extends State<MapScreen> {
       Completer<GoogleMapController>();
 
   static final CameraPosition _kGooglePlex = CameraPosition(
-    target: LatLng(MyStaticVariables.getMyStaticVariable()!.latitude,
-        MyStaticVariables.getMyStaticVariable()!.longitude),
+    target: LatLng(MyStaticVariables.getCurrentPosition()!.latitude,
+       MyStaticVariables.getCurrentPosition()!.longitude),
     zoom: 14.4746,
   );
 
@@ -358,43 +387,8 @@ class MapScreenState extends State<MapScreen> {
 
   @override
   void initState() {
-    // markers.add(Marker(
-    //   //add start location marker
-    //   markerId: MarkerId(startLocation.toString()),
-    //   position: startLocation, //position of marker
-    //   infoWindow: InfoWindow(
-    //     //popup info
-    //     title: 'Starting Point ',
-    //     snippet: 'Start Marker',
-    //   ),
-    //   icon: BitmapDescriptor.defaultMarker, //Icon for Marker
-    // ));
-
-    // markers.add(Marker(
-    //   //add distination location marker
-    //   markerId: MarkerId(endLocation.toString()),
-    //   position: endLocation, //position of marker
-    //   infoWindow: InfoWindow(
-    //     //popup info
-    //     title: 'Destination Point ',
-    //     snippet: 'Destination Marker',
-    //   ),
-    //   icon: BitmapDescriptor.defaultMarker, //Icon for Marker
-    // ));
-
-    // getDirections();
-    setUserName();
+    print('dsd');  
     locationData();
-    // _getCurrentPosition().then((_) {
-    //   // print('then');
-    // });
-
-    // locationData();
-    // StreamSubscription<Position> positionStream =
-    //     Geolocator.getPositionStream(locationSettings: locationSettings)
-    //         .listen((Position? position) {
-    //   _getCurrentPosition();
-    // });
     // TODO: implement initState
     super.initState();
   }
@@ -406,39 +400,16 @@ class MapScreenState extends State<MapScreen> {
           ? const Center(
               child: CircularProgressIndicator(),
             )
-          : StreamBuilder(
+          :
+          StreamBuilder(
+            // initialData: [],
               stream: FirebaseFirestore.instance
                   .collection("usersLocation")
                   .snapshots(),
               builder: (context, snapshot) {
-                // print(snapshot.data!.docs.first.id);
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  isLoading =
-                      true; // Set loading to true while waiting for data
-                } else {
-//Extract the location from document
-                  GeoPoint location = snapshot.data!.docs.first.get("location");
-// Check if location is valid
-                  isLoading = false;
-                  // if (location == null) {
-                  //   return Text("There was no location data");
-                  // }
-                  print('snapshot ${snapshot.data!.docs.first['location']}');
-                  // Remove any existing markers
-                  // markers.clear();
-                  // final latLng = LatLng(location.latitude, location.longitude);
-// Add new marker with markerId.
-                  // markers.add(
-                  //     Marker(markerId: MarkerId("location"), position: latLng));
-// If google map is already created then update camera position with animation
-                  // _googleMapController
-                  //     ?.animateCamera(CameraUpdate.newCameraPosition(
-                  //   CameraPosition(
-                  //     target: latLng,
-                  //     zoom: 15,
-                  //   ),
-                  // ));
-                  return GoogleMap(
+                if(snapshot.hasData&& snapshot.data!=null){
+                  print('loaded');
+                   return GoogleMap(
                     mapType: MapType.normal,
                     initialCameraPosition: _kGooglePlex,
                     onMapCreated: (GoogleMapController controller) {
@@ -460,6 +431,15 @@ class MapScreenState extends State<MapScreen> {
                     },
                   );
                 }
+              else if(snapshot.hasError){
+                print('error');
+              }
+                
+                 else {
+                  print('still loading');
+                  return const CircularProgressIndicator();
+                 
+                }
                 return CircularProgressIndicator();
               }),
       // floatingActionButton: FloatingActionButton.extended(
@@ -474,13 +454,13 @@ class MapScreenState extends State<MapScreen> {
     );
   }
 
-  void _goToTheLake() async {
-    final fcmToken = await FirebaseMessaging.instance.getToken();
-    print(fcmToken);
+  // void _goToTheLake() async {
+  //   final fcmToken = await FirebaseMessaging.instance.getToken();
+  //   print(fcmToken);
 
-    // getCurrentAddressFromLatLong(
-    //     _currentPosition!.latitude, _currentPosition!.longitude);
-    // LocationServices()
-    //     .getDirections(LatLng(_currentPosition!.latitude, _currentPosition!.longitude), const LatLng(50,50));
-  }
+  //   // getCurrentAddressFromLatLong(
+  //   //     _currentPosition!.latitude, _currentPosition!.longitude);
+  //   // LocationServices()
+  //   //     .getDirections(LatLng(_currentPosition!.latitude, _currentPosition!.longitude), const LatLng(50,50));
+  // }
 }

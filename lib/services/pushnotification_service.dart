@@ -113,6 +113,7 @@ class PushNotificationService {
 
   Future<String?> getToken() async {
     String? token = await firebaseMessaging.getToken();
+     print('Token from device ${token}');
     return token;
   }
 

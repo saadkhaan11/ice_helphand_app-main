@@ -100,11 +100,11 @@ class _ContactsScreenState extends State<ContactsScreen> {
             : SafeArea(
                 child: SingleChildScrollView(
                 child: Column(children: [
-                  TextButton(
-                      onPressed: () {
-                        loadContacts();
-                      },
-                      child: Text('press')),
+                  // TextButton(
+                  //     onPressed: () {
+                  //       loadContacts();
+                  //     },
+                  //     child: Text('press')),
                   ContactsAppBar(
                     isaddButton: true,
                     isavatar: true,

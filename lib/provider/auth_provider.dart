@@ -72,8 +72,6 @@ class AuthProvider with ChangeNotifier {
     } on FirebaseAuthException catch (e) {
       // print('xyz');
       if (e.code == 'invalid-email') {
-        // print(e.code);
-        // toast(Text('The email address is badly formatted'));
         toast('invalid-email', context: context);
       } else if (e.code == 'user-not-found') {
         toast('user-not-found', context: context, duration: Toast.LENGTH_SHORT);
@@ -132,6 +130,28 @@ class AuthProvider with ChangeNotifier {
 
   Future signout() async {
     return await _auth.signOut();
+  }
+
+  Future passwordRest(String email,BuildContext context) async {
+    try {
+      await FirebaseAuth.instance
+          .sendPasswordResetEmail(email: email)
+          .then((value) {
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+            backgroundColor: Color(0xffE74140),
+            content: Text(
+                'A password Reset Mail has been sent please check your mail or in spam')));
+        Navigator.pop(context);
+      });
+    } on FirebaseAuthException catch (e) {
+      showDialog(
+          context: context,
+          builder: (context) {
+            return AlertDialog(
+              content: Text(e.message.toString()),
+            );
+          });
+    }
   }
 
   Future deleteUser(String email, String password) async {

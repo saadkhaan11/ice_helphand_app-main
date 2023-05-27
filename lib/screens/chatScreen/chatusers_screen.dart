@@ -210,6 +210,7 @@ class _ChatUsersScreenState extends State<ChatUsersScreen> {
                               .snapshots(),
                           builder: (context, AsyncSnapshot snapshot) {
                             if (snapshot.hasData) {
+                              print(snapshot.data.docs.length);
                               if (snapshot.data.docs.length < 1) {
                                 return const Center(
                                   child: Text("No Chats Available !"),

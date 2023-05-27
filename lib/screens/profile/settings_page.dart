@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:ice_helphand/screens/profile/edit_profile_screen.dart';
 import '../../color_pallet.dart';
+import '../../provider/auth_provider.dart';
 
 class SettingsPage extends StatefulWidget {
   static const routeName = "/settingsPage";
@@ -18,6 +19,7 @@ class _SettingsPageState extends State<SettingsPage> {
   bool isLoading = true;
   final FirebaseAuth _auth = FirebaseAuth.instance;
   Map<String, dynamic>? userData = {};
+  final AuthProvider auth = AuthProvider();
   // UserModel? currentUser;
   // late String imageUrl = "http://cdn.onlinewebfonts.com/svg/img_401900.png";
   void getUserData() async {
@@ -218,8 +220,8 @@ class _SettingsPageState extends State<SettingsPage> {
                                     children: [
                                       GestureDetector(
                                         onTap: () {
-                                          // RouteGenerator.navigatorKey.currentState!
-                                          //     .pop('dialog');
+                                          Navigator.of(context, rootNavigator: true).pop('dialog');
+                                      
                                         },
                                         child: Container(
                                           padding: const EdgeInsets.symmetric(
@@ -234,13 +236,8 @@ class _SettingsPageState extends State<SettingsPage> {
                                       ),
                                       GestureDetector(
                                         onTap: () {
-                                          // RouteGenerator.navigatorKey.currentState!
-                                          //     .pop('dialog');
-                                          // RouteGenerator.navigatorKey.currentState!
-                                          //     .pushNamedAndRemoveUntil(
-                                          //         logInRoute, (route) => false);
-                                          // BlocProvider.of<AuthBloc>(context)
-                                          //     .add(const AuthLogoutEvent());
+                                          Navigator.of(context, rootNavigator: true).pop('dialog');
+                                          auth.signout();
                                         },
                                         child: Container(
                                             padding: const EdgeInsets.symmetric(

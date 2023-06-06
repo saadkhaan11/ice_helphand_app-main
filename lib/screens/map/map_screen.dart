@@ -190,7 +190,6 @@ class MapScreenState extends State<MapScreen> {
           // inRange(snapshot.docs[i].data()['location'].latitude,
           //     snapshot.docs[i].data()['location'].longitude);
           addCustomIcon();
-
           initMarker(snapshot.docs[i].data(), snapshot.docs[i].id,
               snapshot.docs[i].data()['username']);
         }
@@ -299,25 +298,25 @@ class MapScreenState extends State<MapScreen> {
     
 //   }
 
-  void inRange(double latitude, double longitude) {
+  // void inRange(double latitude, double longitude) {
 
   
     
-         double distance = distanceBetween(
-        LatLng(_currentPosition!.latitude, _currentPosition!.latitude),
-        LatLng(latitude, longitude));
-    // print("distace${distance}");
-    // if (distance < 50) {
-    firebaseFirestore.collection("users").doc(user!.uid).set({
-      "inRange": true,
-    },SetOptions(merge: true));
+  //        double distance = distanceBetween(
+  //       LatLng(_currentPosition!.latitude, _currentPosition!.latitude),
+  //       LatLng(latitude, longitude));
+  //   // print("distace${distance}");
+  //   // if (distance < 50) {
+  //   firebaseFirestore.collection("users").doc(user!.uid).set({
+  //     "inRange": true,
+  //   },SetOptions(merge: true));
  
-    // print(_currentPosition);
+  //   // print(_currentPosition);
 
-    // }
-    // distanceBetween(latitude: 10, longitude: 20);
-    // GeoPoint location = GeoPoint(latitude, longitude);
-  }
+  //   // }
+  //   // distanceBetween(latitude: 10, longitude: 20);
+  //   // GeoPoint location = GeoPoint(latitude, longitude);
+  // }
 
   // void setUserName() {
   //   firebaseFirestore.collection("users").doc(user!.uid).get().then((value) {

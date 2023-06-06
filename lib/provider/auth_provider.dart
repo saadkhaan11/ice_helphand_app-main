@@ -66,7 +66,7 @@ class AuthProvider with ChangeNotifier {
       //function to store token
       DatabaseService databaseService = DatabaseService(user!.uid);
       final token = await _fcm.getToken();
-      databaseService.storeToken(token: token);
+      databaseService.updateToken(token: token);
 
       return _userfromfirebaseuser(user);
     } on FirebaseAuthException catch (e) {
@@ -93,28 +93,37 @@ class AuthProvider with ChangeNotifier {
       required String lName,
       required BuildContext context}) async {
     try {
+      
       UserCredential userCredential =
           await _auth.createUserWithEmailAndPassword(
               email: email.trim(), password: pass.trim());
+              
       final ref = FirebaseStorage.instance
           .ref()
           .child('user_image')
           .child('${userCredential.user!.uid}.jpg');
-      print("Reference of storage $ref");
+      // print("Reference of storage $ref");
       await ref.putFile(File(image));
 
       final url = await ref.getDownloadURL();
 
       User? user = userCredential.user;
       DatabaseService databaseService = DatabaseService(user!.uid);
+      // bool isVerified = FirebaseAuth.instance.currentUser!.emailVerified;
+      // print(isVerified);
+      final token = await _fcm.getToken();
+      
       databaseService.createmyUser(
           username: username,
           email: email,
           image: url,
           fName: fName,
-          lName: lName);
-      final token = await _fcm.getToken();
-      databaseService.storeToken(token: token);
+          lName: lName,
+          token: token.toString(),
+          );
+      
+      // final token = await _fcm.getToken();
+      // databaseService.storeToken(token: token);
       return _userfromfirebaseuser(user);
     } on FirebaseAuthException catch (e) {
       // print(e.code);

@@ -1,5 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_in_app_messaging/firebase_in_app_messaging.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:ice_helphand/models/added_contacts.dart';
@@ -34,6 +36,11 @@ class _HomeScreenState extends State<HomeScreen> {
   final AuthProvider auth = AuthProvider();
   String? selectedText;
   String? selectedBody;
+  final CollectionReference usersCollection =
+      FirebaseFirestore.instance.collection('users');
+       String? fName ;
+       String? lName;
+       String? helpSeekerImage;
   List<Map> cards = [
     {'title': 'Theft Spotted', 'body': 'He Got Robbed Help Him'},
     {'title': 'I Have Accident', 'body': 'Accident Spotted Help Him'},
@@ -136,7 +143,11 @@ class _HomeScreenState extends State<HomeScreen> {
     // print('twillo called');
     super.initState();
   }
-
+  // void needHelp(){
+  //   firebaseFirestore.collection("users").doc(user!.uid).set({
+  //     "needHelp": true,
+  //   },SetOptions(merge: true));
+  // }
   void notifyInRange() {
     print('notificatioon');
     Future<QuerySnapshot<Map<String, dynamic>>> querySnapshot =
@@ -152,7 +163,9 @@ class _HomeScreenState extends State<HomeScreen> {
 
           if (snapshot.docs[i].data()['uid'] != user!.uid &&
               snapshot.docs[i].data()['inRange'] == true) {
-            print("if:${snapshot.docs[i].data()['uid']}");
+            // print("if:${snapshot.docs[i].data()['uid']}");
+            // needHelp();
+            
             getToken(snapshot.docs[i].data()['uid']);
             // print(snapshot.docs[i].data());
             // getToken(snapshot.docs[i].data()['uid']);
@@ -201,7 +214,35 @@ class _HomeScreenState extends State<HomeScreen> {
       //     toNumber: element.phNo!.first.value.toString(), messageBody: 'Hi');
     }
   }
+ void sendInAppNotification(){
+  usersCollection.doc(user!.uid).get().then((value) {
+    fName = value.get('firstName');
+    lName = value.get('lastName');
+    helpSeekerImage = value.get('image');
+  }).then((value) {
+    usersCollection.doc(user!.uid).collection('inRangeUsers').get().then((value) {
+    value.docs.forEach((element) { 
+      usersCollection.doc(element.id).update({
+      'needHelp': true,
+      'seekerName': '$fName $lName',
+      'seekersUid': user!.uid,
+      'time':FieldValue.serverTimestamp(),
+      'helpSeekerImage':helpSeekerImage,
+      'emergencySituation':selectedText??cards[0]['title'],
 
+    });
+    });
+    // print(value.docs.first.id);
+  });
+  });
+
+  // helpSeeker['username'];/
+  
+  // usersCollection.doc(user!.uid).update({
+  //     'needHelp': true,
+  //     'seekerName': FieldValue.serverTimestamp(),
+  //   });
+ }
   // Future<void> call() async {
   //   HttpsCallable callable =
   //       FirebaseFunctions.instance.httpsCallable('helloWorld');
@@ -235,8 +276,14 @@ class _HomeScreenState extends State<HomeScreen> {
             InkWell(
                 onTap: () {
                   print('call');
+                  sendInAppNotification();
                   // sendSmsToAll();
-                  notifyInRange();
+                  // notifyInRange();
+                  // FirebaseInAppMessaging.instance.triggerEvent("");
+
+            // FirebaseMessaging.instance.sendMessage();
+
+            // FirebaseMessaging.instance.getInitialMessage();
                   //
                   // notificationService.createNotification(MyNotification(
                   //     to:

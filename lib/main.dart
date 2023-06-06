@@ -177,6 +177,7 @@ class _MyAppState extends State<MyApp> {
     // TODO: implement initState
   
     // setPermission();
+    
     notificationSerivce.requestPermission();
     notificationSerivce.firebaseInit(context);
     notificationSerivce.setupInteractMessage(context);

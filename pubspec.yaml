@@ -63,6 +63,7 @@ dependencies:
   shimmer: ^2.0.0
   textfield_search: ^0.10.0
   twilio_flutter: ^0.0.9
+  firebase_in_app_messaging: ^0.7.3+1
 
 dev_dependencies:
 

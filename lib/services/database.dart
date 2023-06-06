@@ -8,10 +8,10 @@ class DatabaseService {
       FirebaseFirestore.instance.collection('users');
 
   //storing token of cloud messeging in firebase
-  Future storeToken({
+  Future updateToken({
     required String? token,
   }) async {
-    return await usersCollection.doc(uid).collection('token').doc(token).set({
+    return await usersCollection.doc(uid).update({
       'token': token,
       'timestamp': FieldValue.serverTimestamp(),
     });
@@ -29,6 +29,7 @@ class DatabaseService {
     required String image,
     required String fName,
     required String lName,
+    required String token,
   }) async {
     return await usersCollection.doc(uid).set({
       'username': username,
@@ -38,6 +39,18 @@ class DatabaseService {
       'date': DateTime.now(),
       'firstName': fName,
       'lastName': lName,
+      'needHelp':false,
+      'token':token,
+      'tokenUpdatedTimeStamp':FieldValue.serverTimestamp(),
+      'seekerName':'',
+      'seekersUid':'',
+      'helpSeekerImage':'',
+      'emergencySituation':'',
+      'isHelping':false,
+      'helperName':'',
+      'helperImage':'',
+
+
     });
   }
 

@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:ice_helphand/size_config.dart';
 import '../../widgets/message_textfield.dart';
 import '../../widgets/single_message.dart';
 
@@ -31,6 +32,12 @@ class ChatScreen extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
             child: Row(
               children: [
+                GestureDetector(
+                  onTap:(){
+                    Navigator.of(context).pop();
+                  },
+                  child: Icon(Icons.navigate_before)),
+                  SizedBox(width: getProportionateScreenWidth(10),),
                 SizedBox(
                   height: 55,
                   width: 55,

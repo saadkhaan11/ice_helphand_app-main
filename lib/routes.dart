@@ -11,6 +11,8 @@ import 'package:ice_helphand/screens/profile/settings_page.dart';
 import 'package:ice_helphand/screens/verifyemail/verifyemail_screen.dart';
 import 'package:ice_helphand/screens/wrapper.dart';
 
+import 'screens/about/about_screen.dart';
+
 // We use name route
 // All our routes will be available here
 final Map<String, WidgetBuilder> routes = {
@@ -25,6 +27,7 @@ final Map<String, WidgetBuilder> routes = {
   SettingsPage.routeName: ((context) => const SettingsPage()),
   EditProfilePage.routeName: ((context) => const EditProfilePage()),
   ForgetPasswordScreen.routeName:(context) => const ForgetPasswordScreen(),
+  AboutScreen.routeName:(context)=>const AboutScreen(),
 
   // EditContactScreen.routeName: (context) => EditContactScreen(),
 };

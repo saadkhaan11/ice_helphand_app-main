@@ -9,18 +9,18 @@ class CustomWidgets {
       borderRadius: BorderRadius.circular(8.0),
       boxShadow: [
         BoxShadow(
-          color: Palette.cuiPurple.withOpacity(0.25),
+          color: Palette.appredColor.withOpacity(0.25),
           blurRadius: 8.0,
           offset: const Offset(0.0, 2.0),
         ),
       ]);
 
   static BoxDecoration buttonDecoration = BoxDecoration(
-      color: Palette.cuiPurple,
+      color: Palette.appredColor,
       borderRadius: BorderRadius.circular(8.0),
       boxShadow: [
         BoxShadow(
-          color: Palette.cuiPurple.withOpacity(0.25),
+          color: Palette.appredColor.withOpacity(0.25),
           blurRadius: 8.0,
           offset: const Offset(0.0, 2.0),
         ),
@@ -40,7 +40,7 @@ class CustomWidgets {
           vertical: mediaQuery.size.height * 0.02,
         ),
         decoration: BoxDecoration(
-            color: color ?? Palette.cuiPurple,
+            color: color ?? Palette.appredColor,
             borderRadius: BorderRadius.circular(borderRadius ?? 8.0),
             boxShadow: [
               BoxShadow(

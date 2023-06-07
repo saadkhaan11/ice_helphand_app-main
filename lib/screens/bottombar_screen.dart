@@ -52,6 +52,7 @@ class _BottomBarScreenState extends State<BottomBarScreen> {
   String? helperName;
   String? helperImage;
   String? helperUid;
+  Position? currentPosition;
 
 
 
@@ -179,12 +180,13 @@ void setUserName() {
   }
 
   void locationData() async {
+    // Position? currentPosition = MyStaticVariables.getCurrentPosition();
     print('locartiondata');
     firebaseFirestore.collection("usersLocation").get().then((snapshot) {
       if (snapshot.docs.isNotEmpty) {
         for (int i = 0; i < snapshot.docs.length; i++) {
           double distance = distanceBetween(
-        LatLng(MyStaticVariables.getCurrentPosition()!.latitude, MyStaticVariables.getCurrentPosition()!.latitude),
+        LatLng(MyStaticVariables.getCurrentPosition()!.latitude, MyStaticVariables.getCurrentPosition()!.longitude),
         LatLng(snapshot.docs[i].data()['location'].latitude, snapshot.docs[i].data()['location'].longitude));
           totalUsersList.add(UserInRange(uid: snapshot.docs[i].id,distance: distance));
           totalUsersList.forEach((element) {
@@ -259,6 +261,12 @@ void setUserName() {
   //   }
   //   // distanceBetween(latitude: 10, longitude: 20);
   //   // GeoPoint location = GeoPoint(latitude, longitude);
+  // }
+  // void getUrl(){
+  //   // currentPosition =  MyStaticVariables.getCurrentPosition();
+  //  String url = 'https://www.google.com/maps/search/?api=1&query=${33.7376117,},${72.7980267}';
+   
+  //  print(url);
   // }
 
   double distanceBetween(LatLng point1, LatLng point2) {
@@ -800,7 +808,7 @@ void listenToNeedHelpStream() {
                                   })));
                                   });
                               
-                            }, child: Text('Help Him',style: TextStyle(color: Colors.green))),
+                            }, child: Text('Okay',style: TextStyle(color: Colors.green))),
                             // Container(
                             //    height:getProportionateScreenHeight(40),
                             //   color: Color.fromRGBO(80, 119, 118, 1),
@@ -1141,12 +1149,16 @@ void listenToNeedHelpStream() {
   @override
   void initState() {
     // getCurrentUserData();
+    
     listenToNeedHelpStream();
     setPermission().then((value){
       _getCurrentPosition()
       .then((value) {
       locationData();
       setUserName();
+      // currentPosition =  MyStaticVariables.getCurrentPosition();
+      // getUrl();
+      
 
     },);
     });

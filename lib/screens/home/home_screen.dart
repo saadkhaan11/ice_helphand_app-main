@@ -128,10 +128,10 @@ class _HomeScreenState extends State<HomeScreen> {
     );
     twilioFlutter = TwilioFlutter(
         accountSid:
-            'AC8f26982050b5cbfb2de055378c190dda', // replace *** with Account SID
+            'AC909353b4c667a622d0515ae7909e8282', // replace *** with Account SID
         authToken:
-            '944b9d8ba60ef499856a612cc2a00a98', // replace xxx with Auth Token
-        twilioNumber: '+16206469607' // replace .... with Twilio Number
+            '2a1aa1fe8957e44f640d51a6c300afc4', // replace xxx with Auth Token
+        twilioNumber: '+13612829068' // replace .... with Twilio Number
         );
     Provider.of<ContactsProvider>(context, listen: false).fetchContacts();
 
@@ -205,15 +205,18 @@ class _HomeScreenState extends State<HomeScreen> {
   // List<String> clsit = ['+923115838578', '+923468544378', '+923468544378'];
 
   void sendSmsToAll() {
-    twilioFlutter!.sendSMS(toNumber: "+923115838578", messageBody: 'Hi');
+    // Position? pos = MyStaticVariables.getCurrentPosition();
+    // twilioFlutter!.sendSMS(toNumber: "+923115838578", messageBody: 'Help Me. I am at ${MyStaticVariables.getCurrentPosition()}');
+    
     print('sms call');
     for (var element in contactsList!) {
       print("sms smnd${element.phNo!.first.value}");
       print(element.phNo!.first.value.toString());
-      // twilioFlutter!.sendSMS(
-      //     toNumber: element.phNo!.first.value.toString(), messageBody: 'Hi');
+      twilioFlutter!.sendSMS(
+          toNumber: element.phNo!.first.value.toString(), messageBody: 'Help Me. I am at ${MyStaticVariables.getCurrentPosition()}');
     }
   }
+  
  void sendInAppNotification(){
   usersCollection.doc(user!.uid).get().then((value) {
     fName = value.get('firstName');
@@ -277,8 +280,9 @@ class _HomeScreenState extends State<HomeScreen> {
                 onTap: () {
                   print('call');
                   sendInAppNotification();
-                  // sendSmsToAll();
-                  // notifyInRange();
+                  // MyStaticVariables.getCurrentPosition();
+                  sendSmsToAll();
+                  notifyInRange();
                   // FirebaseInAppMessaging.instance.triggerEvent("");
 
             // FirebaseMessaging.instance.sendMessage();
@@ -310,7 +314,7 @@ class _HomeScreenState extends State<HomeScreen> {
             SingleChildScrollView(
               scrollDirection: Axis.horizontal,
               child: SizedBox(
-                height: getProportionateScreenHeight(110),
+                height: getProportionateScreenHeight(130),
                 width: getProportionateScreenWidth(400),
                 child: ListView.builder(
                     scrollDirection: Axis.horizontal,

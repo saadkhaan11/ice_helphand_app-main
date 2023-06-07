@@ -2,11 +2,12 @@ import 'package:geolocator/geolocator.dart';
 
 class MyStaticVariables {
 
-      static Position? position;
+  static Position? position;
   static Position? _currentPosition;
   static bool? _hasPermission;
 
   static Position? getCurrentPosition() {
+    print('currentPosition yay ha${_currentPosition}');
     return _currentPosition;
   }
 

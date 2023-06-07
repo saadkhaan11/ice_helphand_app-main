@@ -2,9 +2,11 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:ice_helphand/screens/about/about_screen.dart';
 import 'package:ice_helphand/screens/profile/edit_profile_screen.dart';
 import '../../color_pallet.dart';
 import '../../provider/auth_provider.dart';
+import '../../size_config.dart';
 
 class SettingsPage extends StatefulWidget {
   static const routeName = "/settingsPage";
@@ -141,48 +143,57 @@ class _SettingsPageState extends State<SettingsPage> {
                           //         .pushNamed(paymentDetailsRoute);
                           //   },
                           // ),
-                          createSettingTile(
-                            mediaQuery: mediaQuery,
-                            color: Palette.location,
-                            tileText: "Chat Notification",
-                            icon: Icons.location_on_outlined,
-                            switchValue: true,
-                            //  state.settings.chatNotifications,
-                            switchOnChaged: (value) {
-                              setState(() {
-                                // BlocProvider.of<SettingsBloc>(context)
-                                //     .add(const ChangeNotificationsEvent());
-                              });
-                            },
-                          ),
-                          createSettingTile(
-                            mediaQuery: mediaQuery,
-                            color: Palette.faceid,
-                            tileText: "Disable Notifices Notifications",
-                            icon: Icons.face_unlock_outlined,
-                            switchValue: false,
-                            switchOnChaged: (value) {
-                              // setState(() {
-                              //   BlocProvider.of<SettingsBloc>(context)
-                              //       .add(const ChangeFaceIDEvent());
-                              // });
-                            },
-                          ),
-                          createInformationTile(
-                            mediaQuery: mediaQuery,
-                            color: Palette.help,
-                            tileText: "Help",
-                            icon: Icons.help,
-                            onTap: () {
-                              // RouteGenerator.navigatorKey.currentState!
-                              //     .pushNamed(helpPageRoute);
-                            },
+                          // createSettingTile(
+                          //   mediaQuery: mediaQuery,
+                          //   color: Palette.location,
+                          //   tileText: "Chat Notification",
+                          //   icon: Icons.location_on_outlined,
+                          //   switchValue: true,
+                          //   //  state.settings.chatNotifications,
+                          //   switchOnChaged: (value) {
+                          //     setState(() {
+                          //       // BlocProvider.of<SettingsBloc>(context)
+                          //       //     .add(const ChangeNotificationsEvent());
+                          //     });
+                          //   },
+                          // ),
+                          // createSettingTile(
+                          //   mediaQuery: mediaQuery,
+                          //   color: Palette.faceid,
+                          //   tileText: "Disable Notifices Notifications",
+                          //   icon: Icons.face_unlock_outlined,
+                          //   switchValue: false,
+                          //   switchOnChaged: (value) {
+                          //     // setState(() {
+                          //     //   BlocProvider.of<SettingsBloc>(context)
+                          //     //       .add(const ChangeFaceIDEvent());
+                          //     // });
+                          //   },
+                          // ),
+                          // createInformationTile(
+                          //   mediaQuery: mediaQuery,
+                          //   color: Palette.help,
+                          //   tileText: "Help",
+                          //   icon: Icons.help,
+                          //   onTap: () {
+                          //     // RouteGenerator.navigatorKey.currentState!
+                          //     //     .pushNamed(helpPageRoute);
+                          //   },
+                          // ),
+                          SizedBox(
+                            height: getProportionateScreenHeight(10),
                           ),
                           createInformationTile(
                             mediaQuery: mediaQuery,
                             color: Palette.blueInformation,
                             tileText: "About App",
                             icon: Icons.info,
+                            onTap: () {
+                              Navigator.pushNamed(context, AboutScreen.routeName);
+                            },
+                          ),
+                          SizedBox(
+                            height: getProportionateScreenHeight(10),
                           ),
                           createInformationTile(
                             mediaQuery: mediaQuery,

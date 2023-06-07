@@ -505,14 +505,14 @@ class _EditProfilePageState extends State<EditProfilePage> {
                     BoxShadow(
                       offset: const Offset(0.0, 2.0),
                       blurRadius: 16.0,
-                      color: Palette.cuiPurple.withOpacity(0.15),
+                      color: Palette.appredColor.withOpacity(0.15),
                     )
                   ],
                 ),
                 child: const Text(
                   "Upload Picture",
                   textAlign: TextAlign.center,
-                  style: TextStyle(color: Palette.cuiPurple),
+                  style: TextStyle(color: Palette.appredColor),
                 ),
               ),
             ),

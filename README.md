@@ -2,10 +2,16 @@
 
 # ice_helphand
 
+This application is designed to assist individuals who find themselves in emergency situations such as theft, accidents, harassment, and more. The app allows victims to generate an alert from their end, which will then be displayed on nearby devices within a specific radius. Additionally, the app can send messages to pre-selected contacts, providing them with crucial information about the situation.
+The primary objective of this app is to provide immediate aid to those facing various emergencies in their daily lives.
 
+𝗧𝗲𝗰𝗵𝗻𝗼𝗹𝗼𝗴𝗶𝗲𝘀 𝗨𝘀𝗲𝗱:
+• Google Maps
+• Firebase
+• Twilio
+• GeoLocation
 
-
-A new Flutter project.
+# images
 
 <img width="320" alt="Screenshot 2023-07-14 at 4 25 45 pm" src="https://github.com/Amir-Yaseen/ice_helphand_app-main/assets/63316291/f5ac707d-cd91-4763-8562-02c3ba83221e">
 #Images

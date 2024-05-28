@@ -54,21 +54,19 @@ class DefaultFirebaseOptions {
   );
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyBP9e8Woff9_MOgBTKp5-paqePB2px5pns',
-    appId: '1:60935317588:android:5ddff98ec904fbace365c1',
-    messagingSenderId: '60935317588',
-    projectId: 'ice-helphand',
-    storageBucket: 'ice-helphand.appspot.com',
+    apiKey: 'AIzaSyCQJqfUUOb1ngS5c-LTuZUyQhYTsq8BQUo',
+    appId: '1:83178293100:android:ed01fdcca96bfbaebb9549',
+    messagingSenderId: '83178293100',
+    projectId: 'helpinghand-d5887',
+    storageBucket: 'helpinghand-d5887.appspot.com',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyDfUnUF3KSC7MyXo0dTUYKR7Bf_ossxPO4',
-    appId: '1:60935317588:ios:4068b7b48e401111e365c1',
-    messagingSenderId: '60935317588',
-    projectId: 'ice-helphand',
-    storageBucket: 'ice-helphand.appspot.com',
-    androidClientId: '60935317588-8tqkitlis7lnmsburmcgiaic9qmglp0g.apps.googleusercontent.com',
-    iosClientId: '60935317588-colj1c8o9mvfgu4b2eljoc36pks2fko1.apps.googleusercontent.com',
+    apiKey: 'AIzaSyCnRFRS3HYX-EJCgiISrvpN7-x_oTSQ_lE',
+    appId: '1:83178293100:ios:dc5cfe73b5709b4abb9549',
+    messagingSenderId: '83178293100',
+    projectId: 'helpinghand-d5887',
+    storageBucket: 'helpinghand-d5887.appspot.com',
     iosBundleId: 'com.example.iceHelphand',
   );
 

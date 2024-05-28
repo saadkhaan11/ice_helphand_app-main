@@ -1,37 +1,37 @@
 {
   "project_info": {
-    "project_number": "60935317588",
-    "project_id": "ice-helphand",
-    "storage_bucket": "ice-helphand.appspot.com"
+    "project_number": "83178293100",
+    "project_id": "helpinghand-d5887",
+    "storage_bucket": "helpinghand-d5887.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:60935317588:android:5ddff98ec904fbace365c1",
+        "mobilesdk_app_id": "1:83178293100:android:ed01fdcca96bfbaebb9549",
         "android_client_info": {
           "package_name": "com.example.ice_helphand"
         }
       },
       "oauth_client": [
         {
-          "client_id": "60935317588-bqdgmek27mptnj7mr1g0mdnghum7e0vb.apps.googleusercontent.com",
+          "client_id": "83178293100-e2p5gs0la3vqer9vjg1gdnnun83ksf6t.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyBP9e8Woff9_MOgBTKp5-paqePB2px5pns"
+          "current_key": "AIzaSyCQJqfUUOb1ngS5c-LTuZUyQhYTsq8BQUo"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "60935317588-bqdgmek27mptnj7mr1g0mdnghum7e0vb.apps.googleusercontent.com",
+              "client_id": "83178293100-e2p5gs0la3vqer9vjg1gdnnun83ksf6t.apps.googleusercontent.com",
               "client_type": 3
             },
             {
-              "client_id": "60935317588-colj1c8o9mvfgu4b2eljoc36pks2fko1.apps.googleusercontent.com",
+              "client_id": "83178293100-lmurun8vvlc35m55qam9vrodf08vq4cp.apps.googleusercontent.com",
               "client_type": 2,
               "ios_info": {
                 "bundle_id": "com.example.iceHelphand"

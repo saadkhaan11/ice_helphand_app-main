@@ -97,7 +97,7 @@ class AuthProvider with ChangeNotifier {
       UserCredential userCredential =
           await _auth.createUserWithEmailAndPassword(
               email: email.trim(), password: pass.trim());
-              
+       print(userCredential.credential);      
       final ref = FirebaseStorage.instance
           .ref()
           .child('user_image')

@@ -11,7 +11,7 @@ class NavigateBackButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return ElevatedButton(
       style: ElevatedButton.styleFrom(
-        primary: Colors.white,
+        backgroundColor: Colors.white,
         elevation: 0,
       ),
       onPressed: () {
